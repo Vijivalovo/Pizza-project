@@ -1,5 +1,5 @@
----Проект "Пиццерия"---
+--- Project "Pizzeria" ---
 
-Состоит из 3-ёх микросервисов: users-service, orders-service, products-service.
+Consists of three microservices: users-service, orders-service, products-service.
 
-Будут использоваться: Spring Data JPA, Spring Web, PostgreSQL Driver, Gateway, Lombok, LiquiBase.
+Technologies used: Spring Data JPA, Spring Web, PostgreSQL Driver, Gateway, Lombok, Liquibase.

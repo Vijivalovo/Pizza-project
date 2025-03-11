@@ -39,4 +39,27 @@
     <changeSet author="Asus (generated)" id="1740939385760-3">
         <addForeignKeyConstraint baseColumnNames="orderItem_id" baseTableName="orders" constraintName="FK1yanj911room9qtyabbl5t9u9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="orderItems" validate="true"/>
     </changeSet>
+    <changeSet author="Asus (generated)" id="1741199261158-1">
+        <addColumn tableName="orders">
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741718473836-3">
+        <dropForeignKeyConstraint baseTableName="orders" constraintName="FK1yanj911room9qtyabbl5t9u9"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741718473836-1">
+        <addColumn tableName="orderItems">
+            <column name="order_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741718473836-2">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="orderItems" constraintName="FK7wpofi79uraw82ksiso1rxuu3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="orderItems" validate="true"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741718473836-4">
+        <dropColumn columnName="orderItem_id" tableName="orders"/>
+    </changeSet>
 </databaseChangeLog>

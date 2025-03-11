@@ -12,4 +12,8 @@ public class OrderItems {
 
     @Column(name = "product_id", nullable = false)
     private Integer product_id;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private OrderItems order_id;
 }

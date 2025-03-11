@@ -26,10 +26,9 @@ public class Orders {
     @Column(name = "coupon", nullable = false)
     private String coupon;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
     @Column(name = "user_id", nullable = false)
     private Integer user_id;
-
-    @ManyToOne
-    @JoinColumn(name = "orderItem_id", nullable = false)
-    private OrderItems orderItems;
 }

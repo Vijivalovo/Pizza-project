@@ -1,7 +1,6 @@
 package com.example.orders.controller;
 
 import com.example.orders.models.Orders;
-import com.example.orders.repository.OrderRepository;
 import com.example.orders.service.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +14,8 @@ import java.util.Map;
 @RestController
 public class OrderController
 {
-
-    private final OrderRepository orderRepository;
-
     @Autowired
     private OrderService orderService;
-
-    OrderController(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
     
     @PostMapping("api/orders/createOrder/")
     public ResponseEntity<Map<String, Object>> createOrder(@RequestBody Orders order)
@@ -121,7 +113,7 @@ public class OrderController
     }
 
     @GetMapping("api/orders/getAll")
-    public ResponseEntity<Map<String, Object>> getAll(@PathVariable int id)
+    public ResponseEntity<Map<String, Object>> getAll()
     {
         try
         {

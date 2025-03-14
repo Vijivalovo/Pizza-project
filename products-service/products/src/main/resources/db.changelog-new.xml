@@ -30,4 +30,22 @@
     <changeSet author="Asus (generated)" id="1740938234813-3">
         <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="products" constraintName="FKog2rp4qthbtt2lfyhfo32lsw9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
     </changeSet>
+    <changeSet author="Asus (generated)" id="1741938708369-1">
+        <dropForeignKeyConstraint baseTableName="orderItems" constraintName="FK7wpofi79uraw82ksiso1rxuu3"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741938708369-2">
+        <dropForeignKeyConstraint baseTableName="products" constraintName="FKog2rp4qthbtt2lfyhfo32lsw9"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741938708369-3">
+        <dropTable tableName="categories"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741938708369-4">
+        <dropTable tableName="orderItems"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741938708369-5">
+        <dropTable tableName="orders"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741938708369-6">
+        <dropTable tableName="products"/>
+    </changeSet>
 </databaseChangeLog>

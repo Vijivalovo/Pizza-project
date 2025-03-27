@@ -1,7 +1,11 @@
 package com.example.products.service;
 
+import com.example.products.DTO.Product.CreateProductDTO;
+import com.example.products.DTO.Product.UpdateProductDTO;
+import com.example.products.models.Categories;
 import com.example.products.models.Products;
 import com.example.products.repository.ProductRepository;
+import com.example.products.repository.CategoryRepository;
 import com.example.products.service.Interfaces.ProductInterfaces;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -20,20 +24,38 @@ public class ProductService implements ProductInterfaces
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @Async
-    public Products createProduct(Products product)
+    public Products createProduct(CreateProductDTO request)
     {
+        Categories category = categoryRepository.findById(request.getCategory_id())        
+        .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        Products product = new Products();
+        product.setName(request.getName());
+        product.setSize(request.getSize());
+        product.setWeight(request.getWeight());
+        product.setCategory(category);
+
         return productRepository.save(product);
     }
 
     @Async
-    public Products updateProduct(Products product)
+    public Products updateProduct(UpdateProductDTO request)
     {
-        if(productRepository.existsById(product.getId()))
-        {
-            return productRepository.save(product);
-        }
-        throw new RuntimeException("Product not found");
+        Products OldProduct = productRepository.findById(request.getId())
+        .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        Products product = new Products();
+        product.setId(OldProduct.getId());
+        product.setCategory(OldProduct.getCategory());
+        product.setName(request.getName());
+        product.setSize(request.getSize());
+        product.setWeight(request.getWeight());
+
+        return productRepository.save(product);
     }
 
     @Async

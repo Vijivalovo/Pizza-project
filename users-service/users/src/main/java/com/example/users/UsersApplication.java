@@ -10,7 +10,7 @@ public class UsersApplication {
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(UsersApplication.class);
-        app.setDefaultProperties(Map.of("server.port", "8081"));
+        app.setDefaultProperties(Map.of("server.port", "8083"));
         app.run(args);
 	}
 

@@ -41,11 +41,11 @@ public class OrderService implements OrderInterfaces
     {
         Optional<Orders> order = orderRepository.findById(id);
 
-        if(order.isPresent())
-        {
-            orderRepository.deleteById(id);
+        if (order.isEmpty()) {
+            throw new RuntimeException("Order not found");
         }
-        throw new RuntimeException("Order not found");
+        System.out.println(order);
+        orderRepository.deleteById(id);
     }
 
     @Async

@@ -1,10 +1,16 @@
 package com.example.orders.models;
+import java.util.ArrayList;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import lombok.Data;
+import java.util.List;
 
 @Entity
 @Data
-@Table(name = "orders")
+@Table(name = "\"orders\"")
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +37,7 @@ public class Orders {
 
     @Column(name = "user_id", nullable = false)
     private Integer user_id;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItems> orderItems = new ArrayList<>();
 }

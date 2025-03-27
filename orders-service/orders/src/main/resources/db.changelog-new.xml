@@ -62,4 +62,52 @@
     <changeSet author="Asus (generated)" id="1741718473836-4">
         <dropColumn columnName="orderItem_id" tableName="orders"/>
     </changeSet>
+    <changeSet author="Asus (generated)" id="1741940593831-1">
+        <createTable tableName="orderItems">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="orderItemsPK"/>
+            </column>
+            <column name="product_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741940593831-2">
+        <createTable tableName="orders">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ordersPK"/>
+            </column>
+            <column name="coupon" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_delivery" type="VARCHAR(255)"/>
+            <column name="type_paymnet" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741940593831-3">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="orderItems" constraintName="FK7wpofi79uraw82ksiso1rxuu3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="orderItems" validate="true"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741954583304-2">
+        <dropForeignKeyConstraint baseTableName="orderItems" constraintName="FK7wpofi79uraw82ksiso1rxuu3"/>
+    </changeSet>
+    <changeSet author="Asus (generated)" id="1741954583304-1">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="orderItems" constraintName="FK90td7v08r46nlwukfklfeaygq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

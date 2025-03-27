@@ -1,8 +1,11 @@
 package com.example.orders.controller;
 
 import com.example.orders.models.OrderItems;
+import com.example.orders.models.Orders;
+import com.example.orders.service.OrderService;
 import com.example.orders.repository.OrderItemRepository;
 import com.example.orders.service.OrderItemService;
+import com.example.orders.DTO.OrderItem.CreateOrderItemDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +29,12 @@ public class OrderItemController
     }
 
     @PostMapping("api/orderItems/createOrderItem/")
-    public ResponseEntity<Map<String, Object>> createOrderItem(@RequestBody OrderItems orderItems)
+    public ResponseEntity<Map<String, Object>> createOrderItem(@RequestBody CreateOrderItemDTO request)
     {
         try
         {
-            OrderItems orderItemNew = orderItemService.createOrderItem(orderItems);
+            System.out.println("Проверка" + request);
+            OrderItems orderItemNew = orderItemService.createOrderItem(request);
             Map<String, Object> response = new HashMap<>();
             response.put("body", orderItemNew);
             response.put("message", "Продукт добавлен");
@@ -103,6 +107,30 @@ public class OrderItemController
         try
         {
             OrderItems orderItem = orderItemService.findById(id);
+            Map<String, Object> response = new HashMap<>();
+            response.put("body", orderItem);
+            response.put("message", "Продукт из заказа найден");
+            response.put("statusCode", 200);
+
+            return ResponseEntity.ok(response);
+        }
+        catch(Exception e)
+        {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Произошла ошибка при поиске продукта из заказа");
+            errorResponse.put("error", e.getMessage());
+            errorResponse.put("statusCode", 500);
+
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    @GetMapping("api/orderItems/findByOrderId/{id}")
+    public ResponseEntity<Map<String, Object>> findByOrderId(@PathVariable int id)
+    {
+        try
+        {
+            List<OrderItems> orderItem = orderItemService.findByOrderId(id);
             Map<String, Object> response = new HashMap<>();
             response.put("body", orderItem);
             response.put("message", "Продукт из заказа найден");

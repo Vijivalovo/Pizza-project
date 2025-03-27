@@ -70,6 +70,7 @@ public class OrderController
     {
         try
         {
+            System.out.println(id);
             orderService.deleteOrder(id);
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Заказ удалён");

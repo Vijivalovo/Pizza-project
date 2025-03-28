@@ -10,7 +10,7 @@ public interface OrderInterfaces
     void deleteOrder(int id);
     Orders findById(int id);
 
-    List<Orders> getAll();
+     List<Orders> getAll();
     List<Orders> getByStatus(String status);
     Orders findByNumber(int number);
 }

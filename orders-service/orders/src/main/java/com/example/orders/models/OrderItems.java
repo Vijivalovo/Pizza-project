@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Table(name = "\"orderItems\"")
 public class OrderItems {
-    @Id
+     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 

@@ -6,6 +6,8 @@ import com.example.orders.repository.OrderItemRepository;
 import com.example.orders.service.Interfaces.OrderItemInterfaces;
 import com.example.orders.repository.OrderRepository;
 import com.example.orders.DTO.OrderItem.CreateOrderItemDTO;
+import com.example.orders.errors.exceptions.orderExceptions.orderNotFound;
+import com.example.orders.errors.exceptions.orderItemExceptions.orderItemNotFound;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -30,9 +32,7 @@ public class OrderItemService implements OrderItemInterfaces
     public OrderItems createOrderItem(CreateOrderItemDTO request)
     {
         Orders order = orderRepository.findById(request.getOrder_id())
-        .orElseThrow(() -> new RuntimeException("Order not found"));
-
-        System.out.println("Проверка" + order);
+        .orElseThrow(() -> new orderNotFound("Order not found by id:" + request.getOrder_id()));
 
         OrderItems orderItem = new OrderItems();
         orderItem.setProduct_id(request.getProduct_id());
@@ -48,7 +48,7 @@ public class OrderItemService implements OrderItemInterfaces
         {
             return orderItemRepository.save(orderItem);
         }
-        throw new RuntimeException("OrderItem not found");
+        throw new orderItemNotFound("OrderItem not found by id:" + orderItem.getId());
     }
 
     @Async
@@ -60,31 +60,19 @@ public class OrderItemService implements OrderItemInterfaces
         {
             orderItemRepository.deleteById(id);
         }
-        throw new RuntimeException("OrderItem not found");
+        throw new orderItemNotFound("OrderItem not found by id:" + id);
     }
 
     @Async
     public OrderItems findById(int id)
     {
         return orderItemRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("OrderItem not found"));
+        .orElseThrow(() -> new orderItemNotFound("OrderItem not found by id:" + id));
     }
 
     @Async
     public List<OrderItems> findByOrderId(int id)
     {
-        List<OrderItems> orderItems = orderItemRepository.findAll();
-
-        List<OrderItems> filteredOrderItems = new ArrayList<>();
-
-        for (OrderItems orderItem : orderItems)
-        {
-            if (orderItem.getOrder().getId() == id)
-            {
-                filteredOrderItems.add(orderItem);
-            }
-        }
-
-        return filteredOrderItems;
+        return orderItemRepository.findByOrderId(id);
     }
 }

@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/orders")
 public class OrderController
 {
     @Autowired
     private OrderService orderService;
     
-    @PostMapping("api/orders/createOrder/")
+    @PostMapping("/createOrder")
     public ResponseEntity<Map<String, Object>> createOrder(@RequestBody Orders order)
     {
         try
@@ -41,7 +42,7 @@ public class OrderController
         }
     }
 
-    @PutMapping("api/orders/updateOrder")
+    @PutMapping("/updateOrder")
     public ResponseEntity<Map<String, Object>> updateOrder(@RequestBody Orders order)
     {
         try
@@ -65,7 +66,7 @@ public class OrderController
         }
     }
 
-    @DeleteMapping("api/orders/deleteOrder/{id}")
+    @DeleteMapping("/deleteOrder/{id}")
     public ResponseEntity<Map<String, Object>> deleteOrder(@PathVariable int id)
     {
         try
@@ -89,7 +90,7 @@ public class OrderController
         }
     }
 
-    @GetMapping("api/orders/findById/{id}")
+    @GetMapping("/findById/{id}")
     public ResponseEntity<Map<String, Object>> findById(@PathVariable int id)
     {
         try
@@ -113,7 +114,7 @@ public class OrderController
         }
     }
 
-    @GetMapping("api/orders/getAll")
+    @GetMapping("/getAll")
     public ResponseEntity<Map<String, Object>> getAll()
     {
         try
@@ -137,7 +138,7 @@ public class OrderController
         }
     }
 
-    @GetMapping("api/orders/getByStatus/{status}")
+    @GetMapping("/getByStatus/{status}")
     public ResponseEntity<Map<String, Object>> getByStatus(@PathVariable String status)
     {
         try
@@ -161,7 +162,7 @@ public class OrderController
         }
     }
 
-    @GetMapping("api/orders/findByNumber/{number}")
+    @GetMapping("/findByNumber/{number}")
     public ResponseEntity<Map<String, Object>> findByNumber(@PathVariable int number)
     {
         try

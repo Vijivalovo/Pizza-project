@@ -23,7 +23,7 @@ public class OrderController
     {
         try
         {
-            Orders orderNew = orderService.createOrder(order);
+            Orders  orderNew = orderService.createOrder(order);
             Map<String, Object> response = new HashMap<>();
             response.put("body", orderNew);
             response.put("message", "Заказ сформирован");

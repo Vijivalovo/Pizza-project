@@ -35,7 +35,7 @@ public class OrderItemController
         try
         {
             System.out.println("Проверка" + request);
-            OrderItems orderItemNew = orderItemService.createOrderItem(request);
+            OrderItems  orderItemNew = orderItemService.createOrderItem(request);
             Map<String, Object> response = new HashMap<>();
             response.put("body", orderItemNew);
             response.put("message", "Продукт добавлен");

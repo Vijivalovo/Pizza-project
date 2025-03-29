@@ -26,7 +26,7 @@ public class Orders {
     @Column(name = "type_delivery", nullable = true)
     private String type_delivery;
 
-    @Column(name = "price", nullable = false)
+     @Column(name = "price", nullable = false)
     private Integer price;
 
     @Column(name = "coupon", nullable = false)

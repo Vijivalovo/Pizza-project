@@ -10,6 +10,7 @@
 
     <!-- Логирование для уровня INFO и выше в консоль -->
     <root level="INFO">
+    
         <appender-ref ref="CONSOLE" />
     </root>
 

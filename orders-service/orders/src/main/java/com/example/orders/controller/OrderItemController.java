@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/orderItems")
 public class OrderItemController
 {
     @Autowired
@@ -28,7 +29,7 @@ public class OrderItemController
         this.orderItemRepository = orderItemRepository;
     }
 
-    @PostMapping("api/orderItems/createOrderItem/")
+    @PostMapping("/createOrderItem")
     public ResponseEntity<Map<String, Object>> createOrderItem(@RequestBody CreateOrderItemDTO request)
     {
         try
@@ -54,7 +55,7 @@ public class OrderItemController
         }
     }
 
-    @PutMapping("api/orderItems/updateOrderItem/")
+    @PutMapping("/updateOrderItem")
     public ResponseEntity<Map<String, Object>> updateOrderItem(@RequestBody OrderItems orderItems)
     {
         try
@@ -78,7 +79,7 @@ public class OrderItemController
         }
     }
 
-    @DeleteMapping("api/orderItems/deleteOrderItem/{id}")
+    @DeleteMapping("/deleteOrderItem/{id}")
     public ResponseEntity<Map<String, Object>> deleteOrderItem(@PathVariable int id)
     {
         try
@@ -101,7 +102,7 @@ public class OrderItemController
         }
     }
 
-    @GetMapping("api/orderItems/findById/{id}")
+    @GetMapping("/findById/{id}")
     public ResponseEntity<Map<String, Object>> findById(@PathVariable int id)
     {
         try
@@ -125,7 +126,7 @@ public class OrderItemController
         }
     }
 
-    @GetMapping("api/orderItems/findByOrderId/{id}")
+    @GetMapping("/findByOrderId/{id}")
     public ResponseEntity<Map<String, Object>> findByOrderId(@PathVariable int id)
     {
         try

@@ -14,8 +14,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/registration/").permitAll() // Разрешаем регистрацию без авторизации
+                .requestMatchers("/api/users/registration/").permitAll() // Разрешаем регистрацию без авторизации api/users/logout/{id}
                 .requestMatchers("/api/users/login/").permitAll() // Разрешаем регистрацию без авторизации
+                .requestMatchers("/api/users/logout/{id}").permitAll()
                 .anyRequest().authenticated() // Все остальные запросы требуют авторизации
             )
             .csrf(csrf -> csrf.disable()) // Отключаем CSRF-защиту (например, для Postman)

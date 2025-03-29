@@ -66,4 +66,50 @@ public class userController
             return ResponseEntity.status(500).body(errorResponse);
             }
        }
+
+       @PostMapping("api/users/logout/{id}")
+       public ResponseEntity<Map<String, Object>> logout(@RequestParam int id)
+       {
+            try
+            {
+                UserService.logout(id);
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "Пользователь вышел");
+                response.put("statusCode", 200);
+    
+                return ResponseEntity.ok(response);
+            }
+            catch(Exception e)
+            {
+                Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Произошла ошибка при попытке входа");
+            errorResponse.put("error", e.getMessage());
+            errorResponse.put("statusCode", 500);
+
+            return ResponseEntity.status(500).body(errorResponse);
+            }
+       }
+
+       @PostMapping("api/users/refresh/{id}")
+       public ResponseEntity<Map<String, Object>> refresh(@RequestParam int id, @CookieValue(value = "refreshToken", defaultValue = "") String refreshToken)
+       {
+            try
+            {
+                UserService.logout(id);
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "Пользователь вышел");
+                response.put("statusCode", 200);
+    
+                return ResponseEntity.ok(response);
+            }
+            catch(Exception e)
+            {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Произошла ошибка при попытке входа");
+                errorResponse.put("error", e.getMessage());
+                errorResponse.put("statusCode", 500);
+
+            return ResponseEntity.status(500).body(errorResponse);
+            }
+       }
 }

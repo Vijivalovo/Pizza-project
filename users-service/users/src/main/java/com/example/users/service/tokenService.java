@@ -54,7 +54,7 @@ public class tokenService implements tokenInterface
         return new TokensResponse(accessToken, refreshToken);
     }
 
-    public String validateRefreshToken(String token)
+    public Payload validateRefreshToken(String token)
     {
         try 
         {
@@ -67,7 +67,11 @@ public class tokenService implements tokenInterface
                     .parseSignedClaims(token)
                     .getPayload(); 
 
-            return claims.getSubject();
+            Payload payload = new Payload();
+            payload.setId(claims.get("id", Integer.class));
+            payload.setRole(claims.get("role", Boolean.class));
+
+            return payload;
         }catch (Exception e)
         {
             return null;

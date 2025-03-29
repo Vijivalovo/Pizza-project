@@ -51,6 +51,8 @@ public class userService implements userInterface
       @Async
       public Map<String, Object> registration(registrationDTO dto)
       {
+        System.out.println(dto.getNumber_phone() + "   -->users NewUser = findByPhoneNumber(user.getNumber_phone());");
+
         users NewUser = findByPhoneNumber(dto.getNumber_phone());
 
         if(NewUser.getId() != null)
@@ -169,5 +171,31 @@ public class userService implements userInterface
       public void logout(int id)
       {
          TokenService.removeToken(id);
+      }
+
+      @Async
+      public Map<String, Object> refresh(String token)
+      {
+        if(token.equals(null))
+        {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unathorized");
+        }
+
+        String[] parts = token.split(" ");
+
+        String refreshToken = parts[1];
+
+        Payload payload = TokenService.validateRefreshToken(refreshToken);
+
+        TokensResponse tokens = TokenService.generateTokens(payload);
+
+        TokenService.saveToken(payload.getId() , refreshToken);
+
+        users user = UserRepository.findById(payload.getId()).orElse(null);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("tokens", tokens);
+        response.put("user", user);
+        return response;
       }
 }

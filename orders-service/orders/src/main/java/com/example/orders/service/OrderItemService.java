@@ -11,6 +11,7 @@ import com.example.orders.errors.exceptions.orderItemExceptions.orderItemNotFoun
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,16 @@ public class OrderItemService implements OrderItemInterfaces
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Async
     public OrderItems createOrderItem(CreateOrderItemDTO request)
     {
         Orders order = orderRepository.findById(request.getOrder_id())
         .orElseThrow(() -> new orderNotFound("Order not found by id:" + request.getOrder_id()));
 
-        OrderItems orderItem = new OrderItems();
-        orderItem.setProduct_id(request.getProduct_id());
+        OrderItems orderItem = modelMapper.map(request, OrderItems.class);
         orderItem.setOrder(order);
 
         return orderItemRepository.save(orderItem);

@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.example.orders.errors.exceptions.orderExceptions.orderNotFound;
+import com.example.orders.errors.exceptions.orderItemExceptions.orderItemNotFound;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +24,17 @@ public class globalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(OrderNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleOrderNotFound(OrderNotFoundException e) {
+    @ExceptionHandler(orderNotFound.class)
+    public ResponseEntity<Map<String, Object>> handleOrderNotFound(orderNotFound e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        response.put("statusCode", 404);
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(orderItemNotFound.class)
+    public ResponseEntity<Map<String, Object>> handleOrderNotFound(orderItemNotFound e) {
         Map<String, Object> response = new HashMap<>();
         response.put("error", e.getMessage());
         response.put("statusCode", 404);

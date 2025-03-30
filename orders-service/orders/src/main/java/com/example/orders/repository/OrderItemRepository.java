@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItems, Integer> {
 
-    List<OrderItems> findByOrderId(int id);
+    List<OrderItems> findByOrder_Id(int id);
     
 }

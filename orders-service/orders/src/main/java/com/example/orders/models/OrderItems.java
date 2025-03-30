@@ -20,8 +20,4 @@ public class OrderItems {
     @JoinColumn(name = "\"order_id\"", nullable = false)
     @JsonIgnore
     private Orders order;
-
-    public Integer getOrderId() {
-        return order != null ? order.getId() : null;
-    }
 }

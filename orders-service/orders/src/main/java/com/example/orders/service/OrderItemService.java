@@ -76,6 +76,6 @@ public class OrderItemService implements OrderItemInterfaces
     @Async
     public List<OrderItems> findByOrderId(int id)
     {
-        return orderItemRepository.findByOrderId(id);
+        return orderItemRepository.findByOrder_Id(id);
     }
 }

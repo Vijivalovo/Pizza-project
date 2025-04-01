@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -19,80 +17,60 @@ public class OrderController
     private OrderService orderService;
     
     @PostMapping("/createOrder")
-    public ResponseEntity<Map<String, Object>> createOrder(@RequestBody Orders order)
+    public ResponseEntity<ResponseClass<Orders>> createOrder(@RequestBody Orders order)
     {
-        return ResponseEntity.status(201).body(
-                                                Map.of(
-                                                    "message", "Order created",
-                                                    "order", orderService.createOrder(order)
-                                                )
-        );
+        ResponseClass<Orders> response = new ResponseClass<>("Order created", orderService.createOrder(order));
+
+        return ResponseEntity.status(201).body(response);
     }
 
     @PutMapping("/updateOrder")
-    public ResponseEntity<Map<String, Object>> updateOrder(@RequestBody Orders order)
+    public ResponseEntity<ResponseClass<Orders>> updateOrder(@RequestBody Orders order)
     {
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "Order updated",
-                                                    "order", orderService.updateOrder(order)
-                                                )
-        );
+        ResponseClass<Orders> response = new ResponseClass<>("Order update", orderService.updateOrder(order));
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @DeleteMapping("/deleteOrder/{id}")
-    public ResponseEntity<Map<String, Object>> deleteOrder(@PathVariable int id)
+    public ResponseEntity<ResponseClass<Void>> deleteOrder(@PathVariable int id)
     {
         orderService.deleteOrder(id);
 
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "Order deleted"
-                                                )
-        );
+        ResponseClass<Void> response = new ResponseClass<>("Order update", null);
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable int id)
+    public ResponseEntity<ResponseClass<Orders>> findById(@PathVariable int id)
     {
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "Find Order with id:" + id,
-                                                    "order", orderService.findById(id)
-                                                )
-        );
+        ResponseClass<Orders> response = new ResponseClass<>("Order update", orderService.findById(id));
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<Map<String, Object>> getAll()
+    public ResponseEntity<ResponseClass<List<Orders>>> getAll()
     {
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "Find all Orders",
-                                                    "order", orderService.getAll()
-                                                )
-        );
+        ResponseClass<List<Orders>> response = new ResponseClass<>("Order update", orderService.getAll());
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/getByStatus/{status}")
-    public ResponseEntity<Map<String, Object>> getByStatus(@PathVariable String status)
+    public ResponseEntity<ResponseClass<List<Orders>>> getByStatus(@PathVariable String status)
     {
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "Find all Orders with status:" + status,
-                                                    "order", orderService.getByStatus(status)
-                                                )
-        );
+        ResponseClass<List<Orders>> response = new ResponseClass<>("Order update", orderService.getByStatus(status));
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/findByNumber/{number}")
-    public ResponseEntity<Map<String, Object>> findByNumber(@PathVariable int number)
+    public ResponseEntity<ResponseClass<Orders>> findByNumber(@PathVariable int number)
     {
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "Find Order with number:" + number,
-                                                    "order", orderService.findByNumber(number)
-                                                )
-        );
+        ResponseClass<Orders> response = new ResponseClass<>("Order update", orderService.findByNumber(number));
+
+        return ResponseEntity.status(200).body(response);
     }
 }

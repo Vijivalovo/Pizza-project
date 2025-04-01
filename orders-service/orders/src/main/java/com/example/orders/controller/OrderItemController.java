@@ -30,58 +30,44 @@ public class OrderItemController
     }
 
     @PostMapping("/createOrderItem")
-    public ResponseEntity<Map<String, Object>> createOrderItem(@RequestBody CreateOrderItemDTO request)
+    public ResponseEntity<ResponseClass<OrderItems>> createOrderItem(@RequestBody CreateOrderItemDTO request)
     {
-        return ResponseEntity.status(201).body(
-                                                Map.of(
-                                                    "message", "OrderItem created",
-                                                    "order", orderItemService.createOrderItem(request)
-                                                )
-        );
+        ResponseClass<OrderItems> response = new ResponseClass<>("Order created", orderItemService.createOrderItem(request));
+
+        return ResponseEntity.status(201).body(response);
     }
 
     @PutMapping("/updateOrderItem")
-    public ResponseEntity<Map<String, Object>> updateOrderItem(@RequestBody OrderItems orderItems)
+    public ResponseEntity<ResponseClass<OrderItems>> updateOrderItem(@RequestBody OrderItems orderItems)
     {
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "OrderItem updated",
-                                                    "order", orderItemService.updateOrderItem(orderItems)
-                                                )
-        );
+        ResponseClass<OrderItems> response = new ResponseClass<>("Order created", orderItemService.updateOrderItem(orderItems));
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @DeleteMapping("/deleteOrderItem/{id}")
-    public ResponseEntity<Map<String, Object>> deleteOrderItem(@PathVariable int id)
+    public ResponseEntity<ResponseClass<Void>> deleteOrderItem(@PathVariable int id)
     {
         orderItemService.deleteOrderItem(id);
 
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "OrderItem deleted"
-                                                )
-        );
+        ResponseClass<Void> response = new ResponseClass<>("Order created", null);
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable int id)
+    public ResponseEntity<ResponseClass<OrderItems>> findById(@PathVariable int id)
     {
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "Find OrderItem with id:" + id,
-                                                    "order", orderItemService.findById(id)
-                                                )
-        );
+        ResponseClass<OrderItems> response = new ResponseClass<>("Order created", orderItemService.findById(id));
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/findByOrderId/{id}")
-    public ResponseEntity<Map<String, Object>> findByOrderId(@PathVariable int id)
+    public ResponseEntity<ResponseClass<List<OrderItems>>> findByOrderId(@PathVariable int id)
     {
-        return ResponseEntity.status(200).body(
-                                                Map.of(
-                                                    "message", "Find all OrderItems with OrderId:" + id,
-                                                    "order", orderItemService.findByOrderId(id)
-                                                )
-        );
+        ResponseClass<List<OrderItems>> response = new ResponseClass<>("Order created", orderItemService.findByOrderId(id));
+
+        return ResponseEntity.status(200).body(response);
     }
 }

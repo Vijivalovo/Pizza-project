@@ -6,8 +6,9 @@ import com.example.orders.repository.OrderItemRepository;
 import com.example.orders.service.Interfaces.OrderItemInterfaces;
 import com.example.orders.repository.OrderRepository;
 import com.example.orders.DTO.OrderItem.CreateOrderItemDTO;
-import com.example.orders.errors.exceptions.orderExceptions.orderNotFound;
-import com.example.orders.errors.exceptions.orderItemExceptions.orderItemNotFound;
+import com.example.orders.config.MessageClass;
+import com.example.orders.errors.exceptions.orderExceptions.OrderNotFound;
+import com.example.orders.errors.exceptions.orderItemExceptions.OrderItemNotFound;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -36,7 +37,7 @@ public class OrderItemService implements OrderItemInterfaces
     public OrderItems createOrderItem(CreateOrderItemDTO request)
     {
         Orders order = orderRepository.findById(request.getOrder_id())
-        .orElseThrow(() -> new orderNotFound("Order not found by id:" + request.getOrder_id()));
+        .orElseThrow(() -> new OrderNotFound(MessageClass.ORDER_NOT_FOUND + request.getOrder_id()));
 
         OrderItems orderItem = modelMapper.map(request, OrderItems.class);
         orderItem.setOrder(order);
@@ -51,7 +52,7 @@ public class OrderItemService implements OrderItemInterfaces
         {
             return orderItemRepository.save(orderItem);
         }
-        throw new orderItemNotFound("OrderItem not found by id:" + orderItem.getId());
+        throw new OrderItemNotFound(MessageClass.ORDERITEM_NOT_FOUND + orderItem.getId());
     }
 
     @Async
@@ -63,14 +64,14 @@ public class OrderItemService implements OrderItemInterfaces
         {
             orderItemRepository.deleteById(id);
         }
-        throw new orderItemNotFound("OrderItem not found by id:" + id);
+        throw new OrderItemNotFound(MessageClass.ORDERITEM_NOT_FOUND + id);
     }
 
     @Async
     public OrderItems findById(int id)
     {
         return orderItemRepository.findById(id)
-        .orElseThrow(() -> new orderItemNotFound("OrderItem not found by id:" + id));
+        .orElseThrow(() -> new OrderItemNotFound(MessageClass.ORDERITEM_NOT_FOUND + id));
     }
 
     @Async

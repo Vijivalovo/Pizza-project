@@ -6,6 +6,7 @@ import com.example.orders.service.OrderService;
 import com.example.orders.repository.OrderItemRepository;
 import com.example.orders.service.OrderItemService;
 import com.example.orders.DTO.OrderItem.CreateOrderItemDTO;
+import com.example.orders.config.MessageClass;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class OrderItemController
     @PostMapping("/createOrderItem")
     public ResponseEntity<ResponseClass<OrderItems>> createOrderItem(@RequestBody CreateOrderItemDTO request)
     {
-        ResponseClass<OrderItems> response = new ResponseClass<>("Order created", orderItemService.createOrderItem(request));
+        ResponseClass<OrderItems> response = new ResponseClass<>(MessageClass.ORDERITEM_CREATED, orderItemService.createOrderItem(request));
 
         return ResponseEntity.status(201).body(response);
     }
@@ -40,7 +41,7 @@ public class OrderItemController
     @PutMapping("/updateOrderItem")
     public ResponseEntity<ResponseClass<OrderItems>> updateOrderItem(@RequestBody OrderItems orderItems)
     {
-        ResponseClass<OrderItems> response = new ResponseClass<>("Order created", orderItemService.updateOrderItem(orderItems));
+        ResponseClass<OrderItems> response = new ResponseClass<>(MessageClass.ORDERITEM_UPDATED, orderItemService.updateOrderItem(orderItems));
 
         return ResponseEntity.status(200).body(response);
     }
@@ -50,7 +51,7 @@ public class OrderItemController
     {
         orderItemService.deleteOrderItem(id);
 
-        ResponseClass<Void> response = new ResponseClass<>("Order created", null);
+        ResponseClass<Void> response = new ResponseClass<>(MessageClass.ORDERITEM_DELETED, null);
 
         return ResponseEntity.status(200).body(response);
     }
@@ -58,7 +59,7 @@ public class OrderItemController
     @GetMapping("/findById/{id}")
     public ResponseEntity<ResponseClass<OrderItems>> findById(@PathVariable int id)
     {
-        ResponseClass<OrderItems> response = new ResponseClass<>("Order created", orderItemService.findById(id));
+        ResponseClass<OrderItems> response = new ResponseClass<>(MessageClass.ORDERITEM_FINDBYID + id, orderItemService.findById(id));
 
         return ResponseEntity.status(200).body(response);
     }
@@ -66,7 +67,7 @@ public class OrderItemController
     @GetMapping("/findByOrderId/{id}")
     public ResponseEntity<ResponseClass<List<OrderItems>>> findByOrderId(@PathVariable int id)
     {
-        ResponseClass<List<OrderItems>> response = new ResponseClass<>("Order created", orderItemService.findByOrderId(id));
+        ResponseClass<List<OrderItems>> response = new ResponseClass<>(MessageClass.ORDERITEM_FINDBYORDERID + id, orderItemService.findByOrderId(id));
 
         return ResponseEntity.status(200).body(response);
     }

@@ -1,44 +1,37 @@
 package com.example.orders.errors.exceptionHandler;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.orders.errors.exceptions.orderExceptions.orderNotFound;
-import com.example.orders.errors.exceptions.orderItemExceptions.orderItemNotFound;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.example.orders.errors.exceptions.orderExceptions.OrderNotFound;
+import com.example.orders.errors.exceptions.orderItemExceptions.OrderItemNotFound;
+import com.example.orders.errors.BusinessError;
 
 @RestControllerAdvice
-public class globalExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleException(Exception e) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Произошла ошибка");
-        response.put("error", e.getMessage());
-        response.put("statusCode", 500);
+    public ResponseEntity<BusinessError> Exception(Exception e)
+    {
+        BusinessError err = new BusinessError(e.getMessage());
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(500).body(err);
     }
 
-    @ExceptionHandler(orderNotFound.class)
-    public ResponseEntity<Map<String, Object>> handleOrderNotFound(orderNotFound e) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("error", e.getMessage());
-        response.put("statusCode", 404);
+    @ExceptionHandler(OrderNotFound.class)
+    public ResponseEntity<BusinessError> OrderNotFound(OrderNotFound e)
+    {
+        BusinessError err = new BusinessError(e.getMessage());
 
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(404).body(err);
     }
 
-    @ExceptionHandler(orderItemNotFound.class)
-    public ResponseEntity<Map<String, Object>> handleOrderNotFound(orderItemNotFound e) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("error", e.getMessage());
-        response.put("statusCode", 404);
+    @ExceptionHandler(OrderItemNotFound.class)
+    public ResponseEntity<BusinessError> OrderItemNotFound(OrderItemNotFound e)
+    {
+        BusinessError err = new BusinessError(e.getMessage());
 
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(404).body(err);
     }
 }

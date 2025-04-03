@@ -1,7 +1,7 @@
 package com.example.orders.errors.exceptions.orderItemExceptions;
 
-public class orderItemNotFound extends RuntimeException {
-    public orderItemNotFound(String message) {
+public class OrderItemNotFound extends RuntimeException {
+    public OrderItemNotFound(String message) {
         super(message);
     }
 }

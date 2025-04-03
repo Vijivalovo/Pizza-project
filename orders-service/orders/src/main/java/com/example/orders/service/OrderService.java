@@ -1,6 +1,7 @@
 package com.example.orders.service;
 
-import com.example.orders.errors.exceptions.orderExceptions.orderNotFound;
+import com.example.orders.config.MessageClass;
+import com.example.orders.errors.exceptions.orderExceptions.OrderNotFound;
 import com.example.orders.models.Orders;
 import com.example.orders.repository.OrderRepository;
 import com.example.orders.service.Interfaces.OrderInterfaces;
@@ -34,7 +35,7 @@ public class OrderService implements OrderInterfaces
         {
             return orderRepository.save(order);
         }
-        throw new orderNotFound("Order not found by id:" + order.getId());
+        throw new OrderNotFound(MessageClass.ORDER_NOT_FOUND + order.getId());
     }
 
     @Async
@@ -44,7 +45,7 @@ public class OrderService implements OrderInterfaces
 
         if (order.isEmpty())
         {
-            throw new orderNotFound("Order not found by id:" + id);
+            throw new OrderNotFound(MessageClass.ORDER_NOT_FOUND + id);
         }
 
         orderRepository.deleteById(id);
@@ -54,7 +55,7 @@ public class OrderService implements OrderInterfaces
     public Orders findById(int id)
     {
         return orderRepository.findById(id)
-        .orElseThrow(() -> new orderNotFound("Order not found by id:" + id));
+        .orElseThrow(() -> new OrderNotFound(MessageClass.ORDER_NOT_FOUND + id));
 
     }
 

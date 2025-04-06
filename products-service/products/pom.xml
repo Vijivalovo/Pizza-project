@@ -19,7 +19,13 @@
         <spring-cloud.version>2024.0.0</spring-cloud.version>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-         <modelmapper.version>3.1.1</modelmapper.version>
+        <liquibase.version>4.25.0</liquibase.version>
+        <modelmapper.version>3.1.1</modelmapper.version>
+        <hibernate.version>6.4.4.Final</hibernate.version>
+        <liquibase-hibernate.version>4.31.1</liquibase-hibernate.version>
+        <jakarta-persistence.version>3.1.0</jakarta-persistence.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <logback.version>1.5.16</logback.version>
     </properties>
 
     <dependencies>
@@ -27,7 +33,7 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>4.25.0</version>
+            <version>${liquibase.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -49,7 +55,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.4.4.Final</version>
+            <version>${hibernate.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -65,7 +71,7 @@
         <dependency>
             <groupId>org.liquibase.ext</groupId>
             <artifactId>liquibase-hibernate6</artifactId>
-            <version>4.31.1</version>
+            <version>${liquibase-hibernate.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -82,7 +88,7 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.1.0</version>
+            <version>${jakarta-persistence.version}</version>
         </dependency>
 
         <!-- Spring Boot JPA starter with exclusions for conflicting SLF4J loggers -->

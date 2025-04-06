@@ -1,5 +1,6 @@
 package com.example.products.controller;
 
+import com.example.products.config.MessageClass;
 import com.example.products.models.Categories;
 import com.example.products.service.CategoryService;
 
@@ -12,127 +13,51 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/products")
 public class CategoryController
 {
     @Autowired
     private CategoryService categoryService;
 
-    @PostMapping("api/categories/createCategory/")
-    public ResponseEntity<Map<String, Object>> createCategory(@RequestBody Categories category)
+    @PostMapping("/createCategory")
+    public ResponseEntity<ResponseClass<Categories>> createCategory(@RequestBody Categories category)
     {
-        try
-        {
-            Categories categoryNew = categoryService.createCategory(category);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", categoryNew);
-            response.put("message", "Категория создана");
-            response.put("statusCode", 200);
+        ResponseClass<Categories> response = new ResponseClass<>("1", categoryService.createCategory(category));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при создании категории");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(201).body(response);
     }
     
-    @PutMapping("api/categories/updateCategory/")
-    public ResponseEntity<Map<String, Object>> updateCategory(@RequestBody Categories category)
+    @PutMapping("/updateCategory")
+    public ResponseEntity<ResponseClass<Categories>> updateCategory(@RequestBody Categories category)
     {
-        try
-        {
-            Categories categoryNew = categoryService.updateCategory(category);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", categoryNew);
-            response.put("message", "Категория обновлена");
-            response.put("statusCode", 200);
+        ResponseClass<Categories> response = new ResponseClass<>("1", categoryService.updateCategory(category));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при обновлении категории");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     } 
     
-    @DeleteMapping("api/categories/deleteCategory/{id}")
-    public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable int id)
+    @DeleteMapping("/deleteCategory/{id}")
+    public ResponseEntity<ResponseClass<Void>> deleteCategory(@PathVariable int id)
     {
-        try
-        {
-            categoryService.deleteCategory(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Категория удалена");
-            response.put("statusCode", 200);
+        categoryService.deleteCategory(id);
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при удалении категории");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
+        ResponseClass<Void> response = new ResponseClass<>("1", null);
 
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
     
-    @GetMapping("api/categories/findById/{id}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable int id)
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<ResponseClass<Categories>> findById(@PathVariable int id)
     {
-        try
-        {
-            Categories category = categoryService.findById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", category);
-            response.put("message", "Категория найдена");
-            response.put("statusCode", 200);
+        ResponseClass<Categories> response = new ResponseClass<>("1", categoryService.findById(id));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске категории");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/categories/getAll/")
-    public ResponseEntity<Map<String, Object>> getAll()
+    @GetMapping("/getAll")
+    public ResponseEntity<ResponseClass<List<Categories>>> getAll()
     {
-        try
-        {
-            List<Categories> categories = categoryService.getAll();
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", categories);
-            response.put("message", "Категории найдены");
-            response.put("statusCode", 200);
+        ResponseClass<List<Categories>> response = new ResponseClass<>("1", categoryService.getAll());
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске категорий");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }    
 }

@@ -8,179 +8,72 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.products.config.MessageClass;
 import com.example.products.models.ProductIngrs;
 import com.example.products.service.ProductIngrService;
 
 @RestController
+@RequestMapping("/api/productIngrs")
 public class ProductIngrController
 {
     @Autowired
     private ProductIngrService productIngrService;
 
-    @PostMapping("api/productIngrs/createProductIngr/")
-    public ResponseEntity<Map<String, Object>> createProductIngr(@RequestBody ProductIngrs productIngr)
+    @PostMapping("/createProductIngr")
+    public ResponseEntity<ResponseClass<ProductIngrs>> createProductIngr(@RequestBody ProductIngrs productIngr)
     {
-        try
-        {
-            ProductIngrs productIngrNew = productIngrService.createProductIngr(productIngr);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", productIngrNew);
-            response.put("message", "Создание");
-            response.put("statusCode", 200);
+        ResponseClass<ProductIngrs> response = new ResponseClass<>("1", productIngrService.createProductIngr(productIngr));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при создании");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(201).body(response);
     }
     
-    @PutMapping("api/productIngrs/updateProductIngr/")
-    public ResponseEntity<Map<String, Object>> updateProductIngr(@RequestBody ProductIngrs productIngr)
+    @PutMapping("/updateProductIngr")
+    public ResponseEntity<ResponseClass<ProductIngrs>> updateProductIngr(@RequestBody ProductIngrs productIngr)
     {
-        try
-        {
-            ProductIngrs productIngrNew = productIngrService.updateProductIngr(productIngr);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", productIngrNew);
-            response.put("message", "Обновление");
-            response.put("statusCode", 200);
+        ResponseClass<ProductIngrs> response = new ResponseClass<>("1", productIngrService.updateProductIngr(productIngr));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при обновлении");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     } 
     
-    @DeleteMapping("api/productIngrs/deleteProductIngr/{id}")
-    public ResponseEntity<Map<String, Object>> deleteProductIngr(@PathVariable int id)
+    @DeleteMapping("/deleteProductIngr/{id}")
+    public ResponseEntity<ResponseClass<Void>> deleteProductIngr(@PathVariable int id)
     {
-        try
-        {
-            productIngrService.deleteProductIngr(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Ингредиент продукта удалён");
-            response.put("statusCode", 200);
+        productIngrService.deleteProductIngr(id);
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при удалении ингредиента продукта");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
+        ResponseClass<Void> response = new ResponseClass<>("1", null);
 
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
     
-    @GetMapping("api/productIngrs/findById/{id}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable int id)
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<ResponseClass<ProductIngrs>> findById(@PathVariable int id)
     {
-        try
-        {
-            ProductIngrs productIngr = productIngrService.findById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", productIngr);
-            response.put("message", "Ингредиент продукта найден");
-            response.put("statusCode", 200);
+        ResponseClass<ProductIngrs> response = new ResponseClass<>("1", productIngrService.findById(id));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске ингредиента продукта");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/productIngrs/getAll/")
-    public ResponseEntity<Map<String, Object>> getAll()
+    @GetMapping("/getAll")
+    public ResponseEntity<ResponseClass<List<ProductIngrs>>> getAll()
     {
-        try
-        {
-            List<ProductIngrs> productIngrs = productIngrService.getAll();
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", productIngrs);
-            response.put("message", "Все ингредиенты всех продуктов найдены");
-            response.put("statusCode", 200);
+        ResponseClass<List<ProductIngrs>> response = new ResponseClass<>("1", productIngrService.getAll());
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске всех ингредиентов");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/productIngrs/getByProductId/{id}")
-    public ResponseEntity<Map<String, Object>> getByProductId(@PathVariable int id)
+    @GetMapping("/getByProductId/{id}")
+    public ResponseEntity<ResponseClass<List<ProductIngrs>>> getByProductId(@PathVariable int id)
     {
-        try
-        {
-            List<ProductIngrs> productIngrs = productIngrService.getByProductId(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", productIngrs);
-            response.put("message", "Ингредиенты продукта найдены");
-            response.put("statusCode", 200);
+        ResponseClass<List<ProductIngrs>> response = new ResponseClass<>("1", productIngrService.getByProductId(id));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске ингредиентов продукта");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/productIngrs/getByIngredientId/{id}")
-    public ResponseEntity<Map<String, Object>> getByIngredientId(@PathVariable int id)
+    @GetMapping("/getByIngredientId/{id}")
+    public ResponseEntity<ResponseClass<List<ProductIngrs>>> getByIngredientId(@PathVariable int id)
     {
-        try
-        {
-            List<ProductIngrs> productIngrs = productIngrService.getByIngredientId(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", productIngrs);
-            response.put("message", "Ингредиенты продукта найдены");
-            response.put("statusCode", 200);
+        ResponseClass<List<ProductIngrs>> response = new ResponseClass<>("1", productIngrService.getByIngredientId(id));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске ингредиентов продукта");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }  
 }

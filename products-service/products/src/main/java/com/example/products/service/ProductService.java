@@ -13,6 +13,7 @@ import com.example.products.service.Interfaces.ProductInterfaces;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -30,16 +31,16 @@ public class ProductService implements ProductInterfaces
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Async
     public Products createProduct(CreateProductDTO request)
     {
         Categories category = categoryRepository.findById(request.getCategory_id())        
         .orElseThrow(() -> new CategoryNotFound(MessageClass.CATEGORY_NOT_FOUND + request.getCategory_id()));
 
-        Products product = new Products();
-        product.setName(request.getName());
-        product.setSize(request.getSize());
-        product.setWeight(request.getWeight());
+        Products product = modelMapper.map(request, Products.class);
         product.setCategory(category);
 
         return productRepository.save(product);
@@ -51,12 +52,9 @@ public class ProductService implements ProductInterfaces
         Products OldProduct = productRepository.findById(request.getId())
         .orElseThrow(() -> new ProductNotFound(MessageClass.PRODUCT_NOT_FOUND + request.getId()));
 
-        Products product = new Products();
+        Products product = modelMapper.map(request, Products.class);
         product.setId(OldProduct.getId());
         product.setCategory(OldProduct.getCategory());
-        product.setName(request.getName());
-        product.setSize(request.getSize());
-        product.setWeight(request.getWeight());
 
         return productRepository.save(product);
     }

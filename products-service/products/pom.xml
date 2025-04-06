@@ -18,6 +18,8 @@
         <spring-boot-admin.version>3.4.3</spring-boot-admin.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+
+         <modelmapper.version>3.1.1</modelmapper.version>
     </properties>
 
     <dependencies>
@@ -36,6 +38,12 @@
                     <artifactId>slf4j-simple</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelmapper.version}</version>
         </dependency>
 
         <dependency>

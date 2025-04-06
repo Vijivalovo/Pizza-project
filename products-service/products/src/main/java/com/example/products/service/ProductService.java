@@ -2,6 +2,7 @@ package com.example.products.service;
 
 import com.example.products.DTO.Product.CreateProductDTO;
 import com.example.products.DTO.Product.UpdateProductDTO;
+import com.example.products.config.MessageClass;
 import com.example.products.errors.exceptions.categoryExceptions.CategoryNotFound;
 import com.example.products.errors.exceptions.productIngrExceptions.ProductNotFound;
 import com.example.products.models.Categories;
@@ -33,7 +34,7 @@ public class ProductService implements ProductInterfaces
     public Products createProduct(CreateProductDTO request)
     {
         Categories category = categoryRepository.findById(request.getCategory_id())        
-        .orElseThrow(() -> new CategoryNotFound("Category not found"));
+        .orElseThrow(() -> new CategoryNotFound(MessageClass.CATEGORY_NOT_FOUND + request.getCategory_id()));
 
         Products product = new Products();
         product.setName(request.getName());
@@ -48,7 +49,7 @@ public class ProductService implements ProductInterfaces
     public Products updateProduct(UpdateProductDTO request)
     {
         Products OldProduct = productRepository.findById(request.getId())
-        .orElseThrow(() -> new ProductNotFound("Product not found"));
+        .orElseThrow(() -> new ProductNotFound(MessageClass.PRODUCT_NOT_FOUND + request.getId()));
 
         Products product = new Products();
         product.setId(OldProduct.getId());
@@ -69,14 +70,14 @@ public class ProductService implements ProductInterfaces
         {
             productRepository.deleteById(id);
         }
-        throw new ProductNotFound("Product not found");
+        throw new ProductNotFound(MessageClass.PRODUCT_NOT_FOUND + id);
     }
 
     @Async
     public Products findById(int id)
     {
         return productRepository.findById(id)
-        .orElseThrow(() -> new ProductNotFound("Product not found"));
+        .orElseThrow(() -> new ProductNotFound(MessageClass.PRODUCT_NOT_FOUND + id));
 
     }
 

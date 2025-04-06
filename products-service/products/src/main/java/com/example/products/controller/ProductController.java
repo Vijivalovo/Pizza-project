@@ -6,8 +6,6 @@ import com.example.products.config.MessageClass;
 import com.example.products.models.Products;
 import com.example.products.service.ProductService;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ public class ProductController
     @PostMapping("/createProduct")
     public ResponseEntity<ResponseClass<Products>> createProduct(@RequestBody CreateProductDTO request)
     {
-        ResponseClass<Products> response = new ResponseClass<>("1", productService.createProduct(request));
+        ResponseClass<Products> response = new ResponseClass<>(MessageClass.PRODUCT_CREATED, productService.createProduct(request));
 
         return ResponseEntity.status(201).body(response);
     }
@@ -32,7 +30,7 @@ public class ProductController
     @PutMapping("/updateProduct")
     public ResponseEntity<ResponseClass<Products>> updateProduct(@RequestBody UpdateProductDTO request)
     {
-        ResponseClass<Products> response = new ResponseClass<>("1", productService.updateProduct(request));
+        ResponseClass<Products> response = new ResponseClass<>(MessageClass.PRODUCT_UPDATED, productService.updateProduct(request));
 
         return ResponseEntity.status(200).body(response);
     }
@@ -42,7 +40,7 @@ public class ProductController
     {
         productService.deleteProduct(id);
 
-        ResponseClass<Void> response = new ResponseClass<>("1", null);
+        ResponseClass<Void> response = new ResponseClass<>(MessageClass.PRODUCT_DELETED, null);
 
         return ResponseEntity.status(200).body(response);
     }
@@ -50,7 +48,7 @@ public class ProductController
     @GetMapping("/findById/{id}")
     public ResponseEntity<ResponseClass<Products>> findById(@PathVariable int id)
     {
-        ResponseClass<Products> response = new ResponseClass<>("1", productService.findById(id));
+        ResponseClass<Products> response = new ResponseClass<>(MessageClass.PRODUCT_FINDBYID + id, productService.findById(id));
 
         return ResponseEntity.status(200).body(response);
     }
@@ -58,7 +56,7 @@ public class ProductController
     @GetMapping("/getAll")
     public ResponseEntity<ResponseClass<List<Products>>> getAll()
     {
-        ResponseClass<List<Products>> response = new ResponseClass<>("1", productService.getAll());
+        ResponseClass<List<Products>> response = new ResponseClass<>(MessageClass.PRODUCT_GETALL, productService.getAll());
 
         return ResponseEntity.status(200).body(response);
     }
@@ -66,7 +64,7 @@ public class ProductController
     @GetMapping("/getByCategoryId/{id}")
     public ResponseEntity<ResponseClass<List<Products>>> getByCategoryId(@PathVariable int id)
     {
-        ResponseClass<List<Products>> response = new ResponseClass<>("1", productService.getByCategoryId(id));
+        ResponseClass<List<Products>> response = new ResponseClass<>(MessageClass.PRODUCT_GETBYCATEGORYID, productService.getByCategoryId(id));
 
         return ResponseEntity.status(200).body(response);
     }   

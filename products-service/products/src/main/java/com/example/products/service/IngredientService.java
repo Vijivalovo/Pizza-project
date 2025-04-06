@@ -1,5 +1,6 @@
 package com.example.products.service;
 
+import com.example.products.config.MessageClass;
 import com.example.products.errors.exceptions.ingredientExceptions.IngredientNotFound;
 import com.example.products.models.Ingredients;
 import com.example.products.service.Interfaces.IngredientInterfaces;
@@ -33,7 +34,7 @@ public class IngredientService implements IngredientInterfaces
         {
             return ingredientRepository.save(ingredient);
         }
-        throw new IngredientNotFound("Ingredient not found");
+        throw new IngredientNotFound(MessageClass.INGREDIENT_NOT_FOUND + ingredient.getId());
     }
 
     @Async
@@ -45,14 +46,14 @@ public class IngredientService implements IngredientInterfaces
         {
             ingredientRepository.deleteById(id);
         }
-        throw new IngredientNotFound("Ingredient not found");
+        throw new IngredientNotFound(MessageClass.INGREDIENT_NOT_FOUND + id);
     }
 
     @Async
     public Ingredients findById(int id)
     {
         return ingredientRepository.findById(id)
-        .orElseThrow(() -> new IngredientNotFound("Ingredient not found"));
+        .orElseThrow(() -> new IngredientNotFound(MessageClass.INGREDIENT_NOT_FOUND + id));
 
     }
 

@@ -4,8 +4,6 @@ import com.example.products.config.MessageClass;
 import com.example.products.models.Ingredients;
 import com.example.products.service.IngredientService;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ public class IngredientController
     @PostMapping("/createIngredient")
     public ResponseEntity<ResponseClass<Ingredients>> createIngredient(@RequestBody Ingredients ingredient)
     {
-        ResponseClass<Ingredients> response = new ResponseClass<>("1", ingredientService.createIngredient(ingredient));
+        ResponseClass<Ingredients> response = new ResponseClass<>(MessageClass.INGREDIENT_CREATED, ingredientService.createIngredient(ingredient));
 
         return ResponseEntity.status(201).body(response);
     }
@@ -30,7 +28,7 @@ public class IngredientController
     @PutMapping("/updateIngredient")
     public ResponseEntity<ResponseClass<Ingredients>> updateIngredient(@RequestBody Ingredients ingredient)
     {
-        ResponseClass<Ingredients> response = new ResponseClass<>("1", ingredientService.updateIngredient(ingredient));
+        ResponseClass<Ingredients> response = new ResponseClass<>(MessageClass.INGREDIENT_UPDATED, ingredientService.updateIngredient(ingredient));
 
         return ResponseEntity.status(200).body(response);
     } 
@@ -40,7 +38,7 @@ public class IngredientController
     {
         ingredientService.deleteIngredient(id);
 
-        ResponseClass<Void> response = new ResponseClass<>("1", null);
+        ResponseClass<Void> response = new ResponseClass<>(MessageClass.INGREDIENT_DELETED, null);
 
         return ResponseEntity.status(200).body(response);
     }
@@ -48,7 +46,7 @@ public class IngredientController
     @GetMapping("/findById/{id}")
     public ResponseEntity<ResponseClass<Ingredients>> findById(@PathVariable int id)
     {
-        ResponseClass<Ingredients> response = new ResponseClass<>("1", ingredientService.findById(id));
+        ResponseClass<Ingredients> response = new ResponseClass<>(MessageClass.INGREDIENT_FINDBYID + id, ingredientService.findById(id));
 
         return ResponseEntity.status(200).body(response);
     }
@@ -56,7 +54,7 @@ public class IngredientController
     @GetMapping("/getAll")
     public ResponseEntity<ResponseClass<List<Ingredients>>> getAll()
     {
-        ResponseClass<List<Ingredients>> response = new ResponseClass<>("1", ingredientService.getAll());
+        ResponseClass<List<Ingredients>> response = new ResponseClass<>(MessageClass.INGREDIENT_GETALL, ingredientService.getAll());
 
         return ResponseEntity.status(200).body(response);
     }    

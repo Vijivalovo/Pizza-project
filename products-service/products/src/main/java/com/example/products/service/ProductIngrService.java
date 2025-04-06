@@ -1,5 +1,6 @@
 package com.example.products.service;
 
+import com.example.products.config.MessageClass;
 import com.example.products.errors.exceptions.productExceptions.ProductIngrNotFound;
 import com.example.products.models.ProductIngrs;
 import com.example.products.repository.ProductIngrRepository;
@@ -34,7 +35,7 @@ public class ProductIngrService implements ProductIngrInterfaces
         {
             return productIngrRepository.save(productIngr);
         }
-        throw new ProductIngrNotFound("ProductIngr not found");
+        throw new ProductIngrNotFound(MessageClass.PRODUCTINGR_NOT_FOUND + productIngr.getId());
     }
 
     @Async
@@ -46,14 +47,14 @@ public class ProductIngrService implements ProductIngrInterfaces
         {
             productIngrRepository.deleteById(id);
         }
-        throw new ProductIngrNotFound("ProductIngr not found");
+        throw new ProductIngrNotFound(MessageClass.PRODUCTINGR_NOT_FOUND + id);
     }
 
     @Async
     public ProductIngrs findById(int id)
     {
         return productIngrRepository.findById(id)
-        .orElseThrow(() -> new ProductIngrNotFound("ProductIngr not found"));
+        .orElseThrow(() -> new ProductIngrNotFound(MessageClass.PRODUCTINGR_NOT_FOUND + id));
 
     }
 

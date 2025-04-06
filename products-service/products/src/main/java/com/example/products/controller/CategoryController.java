@@ -4,8 +4,6 @@ import com.example.products.config.MessageClass;
 import com.example.products.models.Categories;
 import com.example.products.service.CategoryService;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ public class CategoryController
     @PostMapping("/createCategory")
     public ResponseEntity<ResponseClass<Categories>> createCategory(@RequestBody Categories category)
     {
-        ResponseClass<Categories> response = new ResponseClass<>("1", categoryService.createCategory(category));
+        ResponseClass<Categories> response = new ResponseClass<>(MessageClass.CATEGORY_CREATED, categoryService.createCategory(category));
 
         return ResponseEntity.status(201).body(response);
     }
@@ -30,7 +28,7 @@ public class CategoryController
     @PutMapping("/updateCategory")
     public ResponseEntity<ResponseClass<Categories>> updateCategory(@RequestBody Categories category)
     {
-        ResponseClass<Categories> response = new ResponseClass<>("1", categoryService.updateCategory(category));
+        ResponseClass<Categories> response = new ResponseClass<>(MessageClass.CATEGORY_UPDATED, categoryService.updateCategory(category));
 
         return ResponseEntity.status(200).body(response);
     } 
@@ -40,7 +38,7 @@ public class CategoryController
     {
         categoryService.deleteCategory(id);
 
-        ResponseClass<Void> response = new ResponseClass<>("1", null);
+        ResponseClass<Void> response = new ResponseClass<>(MessageClass.CATEGORY_DELETED, null);
 
         return ResponseEntity.status(200).body(response);
     }
@@ -48,7 +46,7 @@ public class CategoryController
     @GetMapping("/findById/{id}")
     public ResponseEntity<ResponseClass<Categories>> findById(@PathVariable int id)
     {
-        ResponseClass<Categories> response = new ResponseClass<>("1", categoryService.findById(id));
+        ResponseClass<Categories> response = new ResponseClass<>(MessageClass.CATEGORY_FINDBYID + id, categoryService.findById(id));
 
         return ResponseEntity.status(200).body(response);
     }
@@ -56,7 +54,7 @@ public class CategoryController
     @GetMapping("/getAll")
     public ResponseEntity<ResponseClass<List<Categories>>> getAll()
     {
-        ResponseClass<List<Categories>> response = new ResponseClass<>("1", categoryService.getAll());
+        ResponseClass<List<Categories>> response = new ResponseClass<>(MessageClass.CATEGORY_GETALL, categoryService.getAll());
 
         return ResponseEntity.status(200).body(response);
     }    

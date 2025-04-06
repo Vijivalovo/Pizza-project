@@ -1,5 +1,6 @@
 package com.example.products.service;
 
+import com.example.products.config.MessageClass;
 import com.example.products.errors.exceptions.categoryExceptions.CategoryNotFound;
 import com.example.products.models.Categories;
 import com.example.products.repository.CategoryRepository;
@@ -33,7 +34,7 @@ public class CategoryService implements CategoryInterfaces
         {
             return categoryRepository.save(category);
         }
-        throw new CategoryNotFound("Categorie not found");
+        throw new CategoryNotFound(MessageClass.CATEGORY_NOT_FOUND + category.getId());
     }
 
     @Async
@@ -45,14 +46,14 @@ public class CategoryService implements CategoryInterfaces
         {
             categoryRepository.deleteById(id);
         }
-        throw new CategoryNotFound("Categorie not found");
+        throw new CategoryNotFound(MessageClass.CATEGORY_NOT_FOUND + id);
     }
 
     @Async
     public Categories findById(int id)
     {
         return categoryRepository.findById(id)
-        .orElseThrow(() -> new CategoryNotFound("Categorie not found"));
+        .orElseThrow(() -> new CategoryNotFound(MessageClass.CATEGORY_NOT_FOUND + id));
 
     }
 

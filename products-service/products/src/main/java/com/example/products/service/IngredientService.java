@@ -1,5 +1,6 @@
 package com.example.products.service;
 
+import com.example.products.errors.exceptions.ingredientExceptions.IngredientNotFound;
 import com.example.products.models.Ingredients;
 import com.example.products.service.Interfaces.IngredientInterfaces;
 import com.example.products.repository.IngredientRepository;
@@ -32,7 +33,7 @@ public class IngredientService implements IngredientInterfaces
         {
             return ingredientRepository.save(ingredient);
         }
-        throw new RuntimeException("Ingredient not found");
+        throw new IngredientNotFound("Ingredient not found");
     }
 
     @Async
@@ -44,14 +45,14 @@ public class IngredientService implements IngredientInterfaces
         {
             ingredientRepository.deleteById(id);
         }
-        throw new RuntimeException("Ingredient not found");
+        throw new IngredientNotFound("Ingredient not found");
     }
 
     @Async
     public Ingredients findById(int id)
     {
         return ingredientRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
+        .orElseThrow(() -> new IngredientNotFound("Ingredient not found"));
 
     }
 

@@ -1,5 +1,6 @@
 package com.example.products.service;
 
+import com.example.products.errors.exceptions.productExceptions.ProductIngrNotFound;
 import com.example.products.models.ProductIngrs;
 import com.example.products.repository.ProductIngrRepository;
 import com.example.products.service.Interfaces.ProductIngrInterfaces;
@@ -33,7 +34,7 @@ public class ProductIngrService implements ProductIngrInterfaces
         {
             return productIngrRepository.save(productIngr);
         }
-        throw new RuntimeException("ProductIngr not found");
+        throw new ProductIngrNotFound("ProductIngr not found");
     }
 
     @Async
@@ -45,14 +46,14 @@ public class ProductIngrService implements ProductIngrInterfaces
         {
             productIngrRepository.deleteById(id);
         }
-        throw new RuntimeException("ProductIngr not found");
+        throw new ProductIngrNotFound("ProductIngr not found");
     }
 
     @Async
     public ProductIngrs findById(int id)
     {
         return productIngrRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("ProductIngr not found"));
+        .orElseThrow(() -> new ProductIngrNotFound("ProductIngr not found"));
 
     }
 
@@ -65,36 +66,12 @@ public class ProductIngrService implements ProductIngrInterfaces
     @Async
     public List<ProductIngrs> getByProductId(int id)
     {
-        List<ProductIngrs> productIngrs = productIngrRepository.findAll();
-
-        List<ProductIngrs> filteredProductIngrs = new ArrayList<>();
-
-        for (ProductIngrs productIngr : productIngrs)
-        {
-            if (productIngr.getProducts().equals(id))
-            {
-                filteredProductIngrs.add(productIngr);
-            }
-        }
-
-        return filteredProductIngrs;
+        return productIngrRepository.getByProductId(id);
     }
 
     @Async
     public List<ProductIngrs> getByIngredientId(int id)
     {
-        List<ProductIngrs> productIngrs = productIngrRepository.findAll();
-
-        List<ProductIngrs> filteredProductIngrs = new ArrayList<>();
-
-        for (ProductIngrs productIngr : productIngrs)
-        {
-            if (productIngr.getProducts().equals(id))
-            {
-                filteredProductIngrs.add(productIngr);
-            }
-        }
-
-        return filteredProductIngrs;
+        return productIngrRepository.getByIngredientId(id);
     }
 }

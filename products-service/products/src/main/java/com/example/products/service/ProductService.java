@@ -2,6 +2,8 @@ package com.example.products.service;
 
 import com.example.products.DTO.Product.CreateProductDTO;
 import com.example.products.DTO.Product.UpdateProductDTO;
+import com.example.products.errors.exceptions.categoryExceptions.CategoryNotFound;
+import com.example.products.errors.exceptions.productIngrExceptions.ProductNotFound;
 import com.example.products.models.Categories;
 import com.example.products.models.Products;
 import com.example.products.repository.ProductRepository;
@@ -31,7 +33,7 @@ public class ProductService implements ProductInterfaces
     public Products createProduct(CreateProductDTO request)
     {
         Categories category = categoryRepository.findById(request.getCategory_id())        
-        .orElseThrow(() -> new RuntimeException("Category not found"));
+        .orElseThrow(() -> new CategoryNotFound("Category not found"));
 
         Products product = new Products();
         product.setName(request.getName());
@@ -46,7 +48,7 @@ public class ProductService implements ProductInterfaces
     public Products updateProduct(UpdateProductDTO request)
     {
         Products OldProduct = productRepository.findById(request.getId())
-        .orElseThrow(() -> new RuntimeException("Product not found"));
+        .orElseThrow(() -> new ProductNotFound("Product not found"));
 
         Products product = new Products();
         product.setId(OldProduct.getId());
@@ -67,14 +69,14 @@ public class ProductService implements ProductInterfaces
         {
             productRepository.deleteById(id);
         }
-        throw new RuntimeException("Product not found");
+        throw new ProductNotFound("Product not found");
     }
 
     @Async
     public Products findById(int id)
     {
         return productRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        .orElseThrow(() -> new ProductNotFound("Product not found"));
 
     }
 
@@ -87,18 +89,6 @@ public class ProductService implements ProductInterfaces
     @Async
     public List<Products> getByCategoryId(int id)
     {
-        List<Products> products = productRepository.findAll();
-
-        List<Products> filteredProductIngrs = new ArrayList<>();
-
-        for (Products product : products)
-        {
-            if (product.getCategory().equals(id))
-            {
-                filteredProductIngrs.add(product);
-            }
-        }
-
-        return filteredProductIngrs;
+        return productRepository.getByCategoryId(id);
     }
 }

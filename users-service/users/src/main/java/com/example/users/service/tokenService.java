@@ -44,144 +44,89 @@ public class tokenService implements tokenInterface
     @Value("${jwt.refresh.secret}")
     private String jwtRefreshSecret;
 
-    private final long accessTokenExpiration = 50 * 60 * 1000; // 50 минут
-    private final long refreshTokenExpiration = 24 * 60 * 60 * 1000; // 1 день
+    @Value("${accessTokenExpiration}")
+    private long accessTokenExpiration;
+
+    @Value("${refreshTokenExpiration}")
+    private long refreshTokenExpiration;
 
     public TokensResponse generateTokens(Payload payload)
     {
-        String accessToken = "Bearer " + generateToken(payload, jwtAccessSecret, accessTokenExpiration); // 50 минут
-        String refreshToken = "Bearer " + generateToken(payload, jwtRefreshSecret, refreshTokenExpiration); // 1 день
-        return new TokensResponse(accessToken, refreshToken);
+        return new TokensResponse("Bearer " + generateToken(payload, jwtAccessSecret, accessTokenExpiration), "Bearer " + generateToken(payload, jwtRefreshSecret, refreshTokenExpiration));
     }
 
-    private SecretKey getSecretKey() {
+    private SecretKey getSecretKey()
+    {
         byte[] keyBytes = Decoders.BASE64.decode(jwtRefreshSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public static SecretKey getSigningKey(String secret)
+    {
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public Payload validateRefreshToken(String token)
     {
-        try 
-        {
-            //token = token.trim().replaceAll("\\s+", "");
+        SecretKey secretKey = getSigningKey(jwtRefreshSecret);
 
-            System.out.println(token + "   -->public Payload validateRefreshToken(String token)");
-            byte[] keyBytes = jwtRefreshSecret.getBytes(StandardCharsets.UTF_8);
-            SecretKey secretKey = getSigningKey(jwtRefreshSecret);
-
-            System.out.println(token + "   -->public Payload validateRefreshToken(String token)");
-
-            // Claims claims = Jwts.parser()
-            // .verifyWith(secretKey)
-            // .build()
-            // .parseSignedClaims(token)
-            // .getPayload();
-
-            JwtParser parser = Jwts.parser()
-                .verifyWith(secretKey)
-                .build();
+        JwtParser parser = Jwts.parser()
+            .verifyWith(secretKey)
+            .build();
             
-            System.out.println(parser + "   -->JwtParser parser = Jwts.parser()");
-            
-            Claims claims = parser.parseSignedClaims(token).getPayload();
+        Claims claims = parser.parseSignedClaims(token).getPayload();
 
-            System.out.println(claims + "   -->Claims claims = Jwts.parser()");
+        Payload payload = new Payload();
+        payload.setId(claims.get("id", Integer.class));
+        payload.setRole(claims.get("role", Boolean.class));
 
-            Payload payload = new Payload();
-            payload.setId(claims.get("id", Integer.class));
-            payload.setRole(claims.get("role", Boolean.class));
-
-            return payload;
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        return payload;
     }
 
-    public String validateAccessToken(String token)
+    public Payload validateAccessToken(String token)
     {
-        try 
-        {
-            byte[] keyBytes = jwtAccessSecret.getBytes(StandardCharsets.UTF_8);
-            SecretKey secretKey = new SecretKeySpec(keyBytes, "HmacSHA256");
+        SecretKey secretKey = getSigningKey(jwtAccessSecret);
 
-            Claims claims = Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+        JwtParser parser = Jwts.parser()
+            .verifyWith(secretKey)
+            .build();
+            
+        Claims claims = parser.parseSignedClaims(token).getPayload();
 
-            return claims.getSubject();
-        }catch (Exception e)
-        {
+        Payload payload = new Payload();
+        payload.setId(claims.get("id", Integer.class));
+        payload.setRole(claims.get("role", Boolean.class));
 
-            return null;
-        }
-    }
-
-    // public Long getUserIdFromToken(String token)
-    // {
-    //     Claims claims = Jwts.parser()
-    //             .setSigningKey(jwtAccessSecret)
-    //             .parseClaimsJws(token)
-    //             .getBody();
-    //     return Long.parseLong(claims.getSubject());
-    // }
-
-    public static SecretKey getSigningKey(String secret) {
-        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes); // Генерируем корректный ключ
+        return payload;
     }
 
     @Async
     public String generateToken(Payload payload, String secret, long expiration)
     {
-            //byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
-            //SecretKey key = new SecretKeySpec(keyBytes, "HmacSHA512");
-            SecretKey key = getSigningKey(secret);
+        SecretKey key = getSigningKey(secret);
 
-            return Jwts.builder()
-                    .claim("id", payload.getId())
-                    .claim("role", payload.getRole())
-                    .expiration(new Date(System.currentTimeMillis() + expiration)) // Новый метод вместо setExpiration()
-                    .signWith(key) // Передаём корректный SecretKey
-                    .compact();
+        return Jwts.builder()
+                .claim("id", payload.getId())
+                .claim("role", payload.getRole())
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key)
+                .compact();
     }
 
     @Async
     public tokens saveToken(int id, String refreshToken)
     {
-        List<tokens> Tokens = TokenRepository.findAll();
-
-        System.out.println(Tokens + "   -->List<tokens> Tokens = TokenRepository.findAll();");
-
-        tokens sortToken = new tokens();
-
-        for (tokens Token : Tokens)
-        {
-            if (Token.getUser().getId() == id)
-            {
-                sortToken = Token;
-            }
-        }
-
-        System.out.println(sortToken + "   -->sortToken");
+        tokens sortToken = TokenRepository.findTokenByUserId(id);
 
         if(sortToken.getId() != null)
         {
-            //String oldRefreshToken = sortToken.getTokens();
             sortToken.setTokens(refreshToken);
-
-            System.out.println(sortToken + "   -->sortToken.setTokens(refreshToken);");
 
             return TokenRepository.save(sortToken);
         }
 
         users NewUser = UserRepository.findById(id).orElse(null);
-
-        System.out.println(NewUser + "   -->UserRepository.findById(id).orElse(null);");
-        System.out.println(refreshToken + "   -->NewToken.setTokens(refreshToken);");
         
         tokens NewToken = new tokens();
         NewToken.setTokens(refreshToken);
@@ -195,26 +140,12 @@ public class tokenService implements tokenInterface
     @Async
     public void removeToken(int id)
     {
-        List<tokens> Tokens = TokenRepository.findAll();
-
-        tokens sortToken = new tokens();
-
-        for (tokens Token : Tokens)
-        {
-            if (Token.getUser().getId() == id)
-            {
-                sortToken = Token;
-            }
-        }
-
-        TokenRepository.deleteById(sortToken.getId());
+        TokenRepository.deleteById(TokenRepository.findTokenByUserId(id).getId());
     }
 
     @Async
     public String findTokenByUserId(int id)
     {
-        tokens token = TokenRepository.findTokenByUserId(id);
-
-        return token.getTokens();
+        return TokenRepository.findTokenByUserId(id).getTokens();
     }
 }

@@ -20,6 +20,10 @@ import com.example.users.DTO.token.Payload;
 import com.example.users.DTO.token.TokensResponse;
 import com.example.users.DTO.user.loginDTO;
 import com.example.users.DTO.user.registrationDTO;
+import com.example.users.errors.exceptions.userExceptions.Unauthorized;
+import com.example.users.errors.exceptions.userExceptions.UserAlreadyExist;
+import com.example.users.errors.exceptions.userExceptions.UserNotFound;
+import com.example.users.errors.exceptions.userExceptions.WrongPassword;
 import com.example.users.models.tokens;
 import com.example.users.models.users;
 import com.example.users.repository.userRepository;
@@ -52,17 +56,10 @@ public class userService implements userInterface
       @Async
       public Map<String, Object> registration(registrationDTO dto)
       {
-        System.out.println(dto.getNumber_phone() + "   -->users NewUser = findByPhoneNumber(user.getNumber_phone());");
-
         users NewUser = findByPhoneNumber(dto.getNumber_phone());
 
-        System.out.println(NewUser + "   -->users NewUser = findByPhoneNumber(dto.getNumber_phone());");
-
-        if(NewUser.getId() != null)
-        {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь уже существует ");
-        }
-
+        if(NewUser.getId() != null) throw new UserAlreadyExist("Пользователь уже существует ");
+        
         users user2 = new users();
 
         user2.setPassword(hashPassword(dto.getPassword()));
@@ -73,17 +70,12 @@ public class userService implements userInterface
 
         UserRepository.save(user2);
 
-        System.out.println(user2 + "   -->users NewUser = findByPhoneNumber(user.getNumber_phone());");
-        System.out.println(user2.getId());
-
         Payload payload = new Payload();
 
         payload.setId(user2.getId());
         payload.setRole(user2.getRole());
 
         TokensResponse tokens = TokenService.generateTokens(payload);
-
-        System.out.println(tokens + "   -->TokensResponse tokens = TokenService.generateTokens(payload);");
 
         TokenService.saveToken(user2.getId(), tokens.getRefreshToken());
 
@@ -96,23 +88,7 @@ public class userService implements userInterface
       @Async 
       public users findByPhoneNumber(String number)
       {
-        System.out.println(number + "   -->public users findByPhoneNumber(String number)");
-        List<users> arrUsers = UserRepository.findAll();
-        System.out.println(arrUsers + "   -->List<users> arrUsers = UserRepository.findAll();");
-        
-        users NewUser = new users();
-
-        for (users user : arrUsers)
-        {
-          System.out.println(user.getNumber_phone() + "   -->for (users user : arrUsers)");
-            if (user.getNumber_phone().equals(number))
-            {
-              System.out.println(user.getNumber_phone() +"  "+ number + "   -->if (user.getNumber_phone() == number)");
-              NewUser = user;
-            }
-        }
-
-        return NewUser;
+        return UserRepository.findByPhoneNumber(number);
       }
 
       @Async
@@ -122,15 +98,7 @@ public class userService implements userInterface
 
         for (users user : arrUsers)
         {
-            if (user.getName().equals(name))
-            {
-              System.out.println(user.getName() +"  "+ name + "   -->for (users user : arrUsers)");
-
-              if(passwordEncoder.matches(password, user.getPassword()))
-              {
-                return user;
-              }
-            }
+            if(user.getName().equals(name)) if(passwordEncoder.matches(password, user.getPassword())) return user;
         }
 
         return null;
@@ -141,21 +109,11 @@ public class userService implements userInterface
       {
         users NewUser = findByPassword(dto.getName(), dto.getPassword());
 
-        System.out.println(NewUser + "   -->users NewUser = findByPassword(dto.getPassword());");
-
-        if(NewUser == null)
-        {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь не существует login");
-        }
+        if(NewUser == null) throw new UserNotFound("Пользователь не существует login");
 
         boolean isPassEqual = checkPassword(dto.getPassword(), NewUser.getPassword());
 
-        if(isPassEqual == false)
-        {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong password");
-        }
-
-        System.out.println(isPassEqual + "   -->boolean isPassEqual = checkPassword(dto.getPassword(), NewUser.getPassword());");
+        if(isPassEqual == false) throw new WrongPassword("Wrong password");
 
         Payload payload = new Payload();
 
@@ -163,8 +121,6 @@ public class userService implements userInterface
         payload.setRole(NewUser.getRole());
 
         TokensResponse tokens = TokenService.generateTokens(payload);
-
-        System.out.println(tokens + "   -->TokensResponse tokens = TokenService.generateTokens(payload);");
 
         TokenService.saveToken(NewUser.getId(), tokens.getRefreshToken());
 
@@ -183,48 +139,22 @@ public class userService implements userInterface
       @Async
       public Map<String, Object> refresh(String token)
       {
-        if(token.equals("null"))
-        {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unathorized");
-        }
-
-        System.out.println(token + "   -->public Map<String, Object> refresh(String token)");
+        if(token.equals("null"))  throw new Unauthorized("Unathorized");
 
         String[] parts = token.split(" ");
-
-        System.out.println(Arrays.toString(parts) + "   --> String[] parts = token.split(\" \");");
-
         String refreshToken = parts[1];
-
-        System.out.println(refreshToken + "   -->public Map<String, Object> refresh(String token)");
 
         Payload userData = TokenService.validateRefreshToken(refreshToken);
 
-        System.out.println(userData + "   -->Payload userData = TokenService.validateRefreshToken(token);");
-
         String tokenFromDb = TokenService.findTokenByUserId(userData.getId());
 
-        System.out.println(tokenFromDb + "   -->String tokenFromDb = TokenService.findTokenByUserId(userData.getId());");
-
-        if(!tokenFromDb.equals(token))
-        {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unathorized");
-        }
-
-        System.out.println(refreshToken + "   -->String refreshToken = parts[1];");
+        if(!tokenFromDb.equals(token)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unathorized");
 
         Payload payload = TokenService.validateRefreshToken(refreshToken);
 
-        System.out.println(payload + "   -->Payload payload = TokenService.validateRefreshToken(refreshToken);");
-
-
         TokensResponse tokens = TokenService.generateTokens(payload);
 
-        System.out.println(tokens + "   -->TokensResponse tokens = TokenService.generateTokens(payload);");
-
         TokenService.saveToken(payload.getId() , tokens.getRefreshToken());
-
-        System.out.println(111 + "   -->TokenService.saveToken(payload.getId() , refreshToken);");
 
         users user = UserRepository.findById(payload.getId()).orElse(null);
 

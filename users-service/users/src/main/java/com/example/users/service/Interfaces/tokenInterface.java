@@ -10,8 +10,7 @@ public interface tokenInterface
 {
     TokensResponse generateTokens(Payload payload);
     Payload validateRefreshToken(String token);
-    String validateAccessToken(String token);
-    //Long getUserIdFromToken(String token);
+    Payload validateAccessToken(String token);
     String generateToken(Payload payload, String secret, long expiration);
     tokens saveToken(int id, String token);
     void removeToken(int id);

@@ -54,18 +54,38 @@ public class tokenService implements tokenInterface
         return new TokensResponse(accessToken, refreshToken);
     }
 
+    private SecretKey getSecretKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtRefreshSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
     public Payload validateRefreshToken(String token)
     {
         try 
         {
-            byte[] keyBytes = jwtRefreshSecret.getBytes(StandardCharsets.UTF_8);
-            SecretKey secretKey = new SecretKeySpec(keyBytes, "HmacSHA256");
+            //token = token.trim().replaceAll("\\s+", "");
 
-            Claims claims = Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload(); 
+            System.out.println(token + "   -->public Payload validateRefreshToken(String token)");
+            byte[] keyBytes = jwtRefreshSecret.getBytes(StandardCharsets.UTF_8);
+            SecretKey secretKey = getSigningKey(jwtRefreshSecret);
+
+            System.out.println(token + "   -->public Payload validateRefreshToken(String token)");
+
+            // Claims claims = Jwts.parser()
+            // .verifyWith(secretKey)
+            // .build()
+            // .parseSignedClaims(token)
+            // .getPayload();
+
+            JwtParser parser = Jwts.parser()
+                .verifyWith(secretKey)
+                .build();
+            
+            System.out.println(parser + "   -->JwtParser parser = Jwts.parser()");
+            
+            Claims claims = parser.parseSignedClaims(token).getPayload();
+
+            System.out.println(claims + "   -->Claims claims = Jwts.parser()");
 
             Payload payload = new Payload();
             payload.setId(claims.get("id", Integer.class));
@@ -74,6 +94,7 @@ public class tokenService implements tokenInterface
             return payload;
         }catch (Exception e)
         {
+            e.printStackTrace();
             return null;
         }
     }
@@ -89,11 +110,12 @@ public class tokenService implements tokenInterface
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token)
-                    .getPayload(); 
+                    .getPayload();
 
             return claims.getSubject();
         }catch (Exception e)
         {
+
             return null;
         }
     }
@@ -120,7 +142,8 @@ public class tokenService implements tokenInterface
             SecretKey key = getSigningKey(secret);
 
             return Jwts.builder()
-                    .subject(String.valueOf(payload.getId()))  // Новый метод вместо setSubject()
+                    .claim("id", payload.getId())
+                    .claim("role", payload.getRole())
                     .expiration(new Date(System.currentTimeMillis() + expiration)) // Новый метод вместо setExpiration()
                     .signWith(key) // Передаём корректный SecretKey
                     .compact();
@@ -149,6 +172,8 @@ public class tokenService implements tokenInterface
         {
             //String oldRefreshToken = sortToken.getTokens();
             sortToken.setTokens(refreshToken);
+
+            System.out.println(sortToken + "   -->sortToken.setTokens(refreshToken);");
 
             return TokenRepository.save(sortToken);
         }
@@ -183,5 +208,13 @@ public class tokenService implements tokenInterface
         }
 
         TokenRepository.deleteById(sortToken.getId());
+    }
+
+    @Async
+    public String findTokenByUserId(int id)
+    {
+        tokens token = TokenRepository.findTokenByUserId(id);
+
+        return token.getTokens();
     }
 }

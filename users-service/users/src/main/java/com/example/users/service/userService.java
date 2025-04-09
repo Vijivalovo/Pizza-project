@@ -1,5 +1,6 @@
 package com.example.users.service;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +56,11 @@ public class userService implements userInterface
 
         users NewUser = findByPhoneNumber(dto.getNumber_phone());
 
+        System.out.println(NewUser + "   -->users NewUser = findByPhoneNumber(dto.getNumber_phone());");
+
         if(NewUser.getId() != null)
         {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь уже существует");
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь уже существует ");
         }
 
         users user2 = new users();
@@ -93,15 +96,19 @@ public class userService implements userInterface
       @Async 
       public users findByPhoneNumber(String number)
       {
+        System.out.println(number + "   -->public users findByPhoneNumber(String number)");
         List<users> arrUsers = UserRepository.findAll();
+        System.out.println(arrUsers + "   -->List<users> arrUsers = UserRepository.findAll();");
         
         users NewUser = new users();
 
         for (users user : arrUsers)
         {
-            if (user.getNumber_phone() == number)
+          System.out.println(user.getNumber_phone() + "   -->for (users user : arrUsers)");
+            if (user.getNumber_phone().equals(number))
             {
-                NewUser = user;
+              System.out.println(user.getNumber_phone() +"  "+ number + "   -->if (user.getNumber_phone() == number)");
+              NewUser = user;
             }
         }
 
@@ -138,7 +145,7 @@ public class userService implements userInterface
 
         if(NewUser == null)
         {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь не существует");
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь не существует login");
         }
 
         boolean isPassEqual = checkPassword(dto.getPassword(), NewUser.getPassword());
@@ -176,20 +183,48 @@ public class userService implements userInterface
       @Async
       public Map<String, Object> refresh(String token)
       {
-        if(token.equals(null))
+        if(token.equals("null"))
         {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unathorized");
         }
 
+        System.out.println(token + "   -->public Map<String, Object> refresh(String token)");
+
         String[] parts = token.split(" ");
+
+        System.out.println(Arrays.toString(parts) + "   --> String[] parts = token.split(\" \");");
 
         String refreshToken = parts[1];
 
+        System.out.println(refreshToken + "   -->public Map<String, Object> refresh(String token)");
+
+        Payload userData = TokenService.validateRefreshToken(refreshToken);
+
+        System.out.println(userData + "   -->Payload userData = TokenService.validateRefreshToken(token);");
+
+        String tokenFromDb = TokenService.findTokenByUserId(userData.getId());
+
+        System.out.println(tokenFromDb + "   -->String tokenFromDb = TokenService.findTokenByUserId(userData.getId());");
+
+        if(!tokenFromDb.equals(token))
+        {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unathorized");
+        }
+
+        System.out.println(refreshToken + "   -->String refreshToken = parts[1];");
+
         Payload payload = TokenService.validateRefreshToken(refreshToken);
+
+        System.out.println(payload + "   -->Payload payload = TokenService.validateRefreshToken(refreshToken);");
+
 
         TokensResponse tokens = TokenService.generateTokens(payload);
 
-        TokenService.saveToken(payload.getId() , refreshToken);
+        System.out.println(tokens + "   -->TokensResponse tokens = TokenService.generateTokens(payload);");
+
+        TokenService.saveToken(payload.getId() , tokens.getRefreshToken());
+
+        System.out.println(111 + "   -->TokenService.saveToken(payload.getId() , refreshToken);");
 
         users user = UserRepository.findById(payload.getId()).orElse(null);
 
@@ -198,4 +233,6 @@ public class userService implements userInterface
         response.put("user", user);
         return response;
       }
+
+
 }

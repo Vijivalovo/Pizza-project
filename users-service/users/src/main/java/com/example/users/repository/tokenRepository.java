@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface tokenRepository extends JpaRepository<tokens, Integer>
 {
+
+    tokens findTokenByUserId(int id);
     
 }

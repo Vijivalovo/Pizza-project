@@ -14,102 +14,38 @@ import com.example.users.models.users;
 import com.example.users.service.userService;
 
 @RestController
+@RequestMapping("/api/users")
 public class userController
 {
        @Autowired
        private userService UserService;
 
-       @PostMapping("api/users/registration/")
-       public ResponseEntity<Map<String, Object>> registration(@RequestBody registrationDTO dto)
+       @PostMapping("/registration")
+       public ResponseEntity<ResponseClass<Map<String, Object>>> registration(@RequestBody registrationDTO dto)
        {
-            try
-            {
-                Map<String, Object> response1 = UserService.registration(dto);
-                Map<String, Object> response = new HashMap<>();
-                response.put("body", response1);
-                response.put("message", "Пользователь создан");
-                response.put("statusCode", 200);
-    
-                return ResponseEntity.ok(response);
-            }
-            catch(Exception e)
-            {
-                Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при создании пользователя");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-            }
+            ResponseClass<Map<String, Object>> response = new ResponseClass<>("1", UserService.registration(dto));
+            return ResponseEntity.status(201).body(response);
        }
 
-       @PostMapping("api/users/login/")
-       public ResponseEntity<Map<String, Object>> login(@RequestBody loginDTO dto)
+       @PostMapping("/login")
+       public ResponseEntity<ResponseClass<Map<String, Object>>> login(@RequestBody loginDTO dto)
        {
-            try
-            {
-                Map<String, Object> response1 = UserService.login(dto);
-                Map<String, Object> response = new HashMap<>();
-                response.put("body", response1);
-                response.put("message", "Пользователь вошёл");
-                response.put("statusCode", 200);
-    
-                return ResponseEntity.ok(response);
-            }
-            catch(Exception e)
-            {
-                Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при попытке входа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-            }
+            ResponseClass<Map<String, Object>> response = new ResponseClass<>("1", UserService.login(dto));
+            return ResponseEntity.status(200).body(response);
        }
 
-       @PostMapping("api/users/logout/{id}")
-       public ResponseEntity<Map<String, Object>> logout(@RequestParam int id)
+       @PostMapping("/logout/{id}")
+       public ResponseEntity<ResponseClass<Void>> logout(@PathVariable int id)
        {
-            try
-            {
-                UserService.logout(id);
-                Map<String, Object> response = new HashMap<>();
-                response.put("message", "Пользователь вышел");
-                response.put("statusCode", 200);
-    
-                return ResponseEntity.ok(response);
-            }
-            catch(Exception e)
-            {
-                Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при попытке входа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-            }
+            UserService.logout(id);
+            ResponseClass<Void> response = new ResponseClass<>("1", null);
+            return ResponseEntity.status(200).body(response);
        }
 
-       @PostMapping("api/users/refresh/{id}")
-       public ResponseEntity<Map<String, Object>> refresh(@RequestParam int id, @CookieValue(value = "refreshToken", defaultValue = "") String refreshToken)
+       @PostMapping("/refresh")
+       public ResponseEntity<ResponseClass<Map<String, Object>>> refresh(@RequestHeader(value = "Token", defaultValue = "") String refreshToken)
        {
-            try
-            {
-                UserService.logout(id);
-                Map<String, Object> response = new HashMap<>();
-                response.put("message", "Пользователь вышел");
-                response.put("statusCode", 200);
-    
-                return ResponseEntity.ok(response);
-            }
-            catch(Exception e)
-            {
-                Map<String, Object> errorResponse = new HashMap<>();
-                errorResponse.put("message", "Произошла ошибка при попытке входа");
-                errorResponse.put("error", e.getMessage());
-                errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-            }
+            ResponseClass<Map<String, Object>> response = new ResponseClass<>("1", UserService.refresh(refreshToken));
+            return ResponseEntity.status(200).body(response);
        }
 }

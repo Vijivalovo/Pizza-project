@@ -1,17 +1,13 @@
 package com.example.users.service;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,11 +20,9 @@ import com.example.users.errors.exceptions.userExceptions.Unauthorized;
 import com.example.users.errors.exceptions.userExceptions.UserAlreadyExist;
 import com.example.users.errors.exceptions.userExceptions.UserNotFound;
 import com.example.users.errors.exceptions.userExceptions.WrongPassword;
-import com.example.users.models.tokens;
 import com.example.users.models.users;
 import com.example.users.repository.userRepository;
 import com.example.users.service.Interfaces.userInterface;
-import com.example.users.service.*;
 
 @Service
 public class userService implements userInterface

@@ -2,10 +2,8 @@ package com.example.users.service.Interfaces;
 
 import com.example.users.models.users;
 
-import java.util.List;
 import java.util.Map;
 
-import com.example.users.DTO.token.*;
 import com.example.users.DTO.user.loginDTO;
 import com.example.users.DTO.user.registrationDTO;
 

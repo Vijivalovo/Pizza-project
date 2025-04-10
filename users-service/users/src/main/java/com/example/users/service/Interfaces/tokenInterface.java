@@ -4,8 +4,6 @@ import com.example.users.DTO.token.Payload;
 import com.example.users.DTO.token.TokensResponse;
 import com.example.users.models.*;
 
-import io.jsonwebtoken.Claims;
-
 public interface tokenInterface
 {
     TokensResponse generateTokens(Payload payload);

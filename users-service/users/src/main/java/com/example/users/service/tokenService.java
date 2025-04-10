@@ -17,17 +17,11 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
-import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 
 @Service

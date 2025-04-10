@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface userRepository extends JpaRepository<users, Integer>
 {
 
-    users findByPhoneNumber(String number);
+    users findByNumberPhone(String phone);
 
     users findByName(String name);
     

@@ -113,7 +113,7 @@ public class tokenService implements tokenInterface
     {
         tokens sortToken = TokenRepository.findTokenByUserId(id);
 
-        if(sortToken.getId() != null)
+        if(sortToken != null)
         {
             sortToken.setTokens(refreshToken);
 

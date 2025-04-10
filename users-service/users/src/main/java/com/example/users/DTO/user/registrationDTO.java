@@ -7,5 +7,5 @@ public class registrationDTO
 {
     String name;
     String password;
-    String number_phone;   
+    String numberPhone;   
 }

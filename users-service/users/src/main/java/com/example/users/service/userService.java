@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
@@ -32,6 +33,9 @@ public class userService implements userInterface
 
       @Autowired
       private tokenService TokenService;
+
+      @Autowired
+      private ModelMapper modelMapper;
       
       private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -50,17 +54,12 @@ public class userService implements userInterface
       @Async
       public Map<String, Object> registration(registrationDTO dto)
       {
-        users NewUser = findByPhoneNumber(dto.getNumber_phone());
+        users NewUser = findByPhoneNumber(dto.getNumberPhone());
 
-        if(NewUser.getId() != null) throw new UserAlreadyExist("Пользователь уже существует ");
+        if(NewUser != null) throw new UserAlreadyExist("Пользователь уже существует ");
         
-        users user2 = new users();
-
+        users user2 = modelMapper.map(dto, users.class);
         user2.setPassword(hashPassword(dto.getPassword()));
-        user2.setName(dto.getName());
-        user2.setNumber_phone(dto.getNumber_phone());
-        user2.setRole(true);
-        user2.setScores(1000);
 
         UserRepository.save(user2);
 
@@ -82,7 +81,7 @@ public class userService implements userInterface
       @Async 
       public users findByPhoneNumber(String number)
       {
-        return UserRepository.findByPhoneNumber(number);
+        return UserRepository.findByNumberPhone(number);
       }
 
       @Async
@@ -92,6 +91,8 @@ public class userService implements userInterface
 
         for (users user : arrUsers)
         {
+          System.out.println(user + " -->users user2 = modelMapper.map(dto, users.class);");
+
             if(user.getName().equals(name)) if(passwordEncoder.matches(password, user.getPassword())) return user;
         }
 

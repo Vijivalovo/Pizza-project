@@ -2,6 +2,7 @@ package com.example.users.errors.exceptionHandler;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.users.errors.BusinessError;
 import com.example.users.errors.exceptions.userExceptions.Unauthorized;
@@ -9,6 +10,7 @@ import com.example.users.errors.exceptions.userExceptions.UserAlreadyExist;
 import com.example.users.errors.exceptions.userExceptions.UserNotFound;
 import com.example.users.errors.exceptions.userExceptions.WrongPassword;
 
+@RestControllerAdvice
 public class GlobalExceptionHadler
 {
     @ExceptionHandler(Exception.class)

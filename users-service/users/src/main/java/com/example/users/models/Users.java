@@ -23,10 +23,10 @@ public class users {
     private String password;
 
     @Column(name = "number_phone", nullable = false)
-    private String number_phone;
+    private String numberPhone;
 
     @Column(name = "scores", nullable = false)
-    private Integer scores;
+    private Integer scores = 0;
 
     @Column(name = "role", nullable = false)
     private Boolean role = false;

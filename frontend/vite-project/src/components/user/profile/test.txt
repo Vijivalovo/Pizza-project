@@ -1,0 +1,83 @@
+/* eslint-disable react/prop-types */
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverHeader,
+    PopoverBody,
+    PopoverArrow,
+    PopoverCloseButton,
+    PopoverFooter,
+    Button,
+    Avatar,
+    WrapItem,
+  } from "@chakra-ui/react";
+  import profile_fetch from "./fetch";
+  import React, { useState, useEffect } from "react";
+  import { useNavigate } from "react-router-dom";
+  function getRandomAvatar(userName) {
+    const avatars = [
+      "https://bit.ly/dan-abramov",
+      "https://bit.ly/tioluwani-kolawole",
+      "https://bit.ly/kent-c-dodds",
+      "https://bit.ly/broken-link",
+      "https://bit.ly/ryan-florence",
+      "https://bit.ly/prosper-baba",
+      "https://bit.ly/code-beast",
+      "https://bit.ly/sage-adebayo",
+    ];
+  
+    const randomIndex = Math.floor(Math.random() * avatars.length);
+    const randomAvatarSrc = avatars[randomIndex];
+  
+    return (
+      <WrapItem alignItems="center">
+        <Avatar size="sm" name={userName} mr={2} src={randomAvatarSrc} /> Профиль
+      </WrapItem>
+    );
+  }
+  
+  export default function Profile() {
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+
+    console.log("1", user);
+  
+    useEffect(() => {
+      profile_fetch(setUser);
+    }, []);
+    const update_data = () => {
+      profile_fetch(setUser);
+    };
+
+    console.log("1", user);
+
+    if (!user) {
+      console.log("1", user);
+      return null;
+    }
+  
+    if(user.role == "Покупатель")
+    {
+      return (
+        <Popover placement="right">
+          <PopoverTrigger>
+            <Button onClick={() => update_data()}>
+              {getRandomAvatar(name)}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <PopoverArrow />
+            <PopoverCloseButton />
+            <PopoverHeader>Имя: {name}</PopoverHeader>
+              <PopoverBody>
+                  Имя: {name} Номер телефона: {numberPhone} Бонусы : {scores}
+              </PopoverBody>
+              <PopoverFooter>
+            </PopoverFooter>
+          </PopoverContent>
+        </Popover>
+      );
+    }
+  }
+  

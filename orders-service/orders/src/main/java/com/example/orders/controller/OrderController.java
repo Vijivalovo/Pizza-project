@@ -1,5 +1,6 @@
 package com.example.orders.controller;
 
+import com.example.orders.config.MessageClass;
 import com.example.orders.models.Orders;
 import com.example.orders.service.OrderService;
 
@@ -7,181 +8,70 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
+@RequestMapping("/api/orders")
 public class OrderController
 {
     @Autowired
     private OrderService orderService;
     
-    @PostMapping("api/orders/createOrder/")
-    public ResponseEntity<Map<String, Object>> createOrder(@RequestBody Orders order)
+    @PostMapping("/createOrder")
+    public ResponseEntity<ResponseClass<Orders>> createOrder(@RequestBody Orders order)
     {
-        try
-        {
-            Orders orderNew = orderService.createOrder(order);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", orderNew);
-            response.put("message", "Заказ сформирован");
-            response.put("statusCode", 200);
+        ResponseClass<Orders> response = new ResponseClass<>(MessageClass.ORDER_CREATED, orderService.createOrder(order));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при формировании заказа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(201).body(response);
     }
 
-    @PutMapping("api/orders/updateOrder")
-    public ResponseEntity<Map<String, Object>> updateOrder(@RequestBody Orders order)
+    @PutMapping("/updateOrder")
+    public ResponseEntity<ResponseClass<Orders>> updateOrder(@RequestBody Orders order)
     {
-        try
-        {
-            Orders orderNew = orderService.updateOrder(order);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", orderNew);
-            response.put("message", "Заказ обновлён");
-            response.put("statusCode", 200);
+        ResponseClass<Orders> response = new ResponseClass<>(MessageClass.ORDER_UPDATED, orderService.updateOrder(order));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при обновлении заказа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @DeleteMapping("api/orders/deleteOrder/{id}")
-    public ResponseEntity<Map<String, Object>> deleteOrder(@PathVariable int id)
+    @DeleteMapping("/deleteOrder/{id}")
+    public ResponseEntity<ResponseClass<Void>> deleteOrder(@PathVariable int id)
     {
-        try
-        {
-            System.out.println(id);
-            orderService.deleteOrder(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Заказ удалён");
-            response.put("statusCode", 200);
+        orderService.deleteOrder(id);
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при удалении заказа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
+        ResponseClass<Void> response = new ResponseClass<>(MessageClass.ORDER_DELETED, null);
 
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/orders/findById/{id}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable int id)
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<ResponseClass<Orders>> findById(@PathVariable int id)
     {
-        try
-        {
-            Orders order = orderService.findById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", order);
-            response.put("message", "Заказ найден");
-            response.put("statusCode", 200);
+        ResponseClass<Orders> response = new ResponseClass<>(MessageClass.ORDER_FINDBYID + id, orderService.findById(id));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске заказа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/orders/getAll")
-    public ResponseEntity<Map<String, Object>> getAll()
+    @GetMapping("/getAll")
+    public ResponseEntity<ResponseClass<List<Orders>>> getAll()
     {
-        try
-        {
-            List<Orders> orders = orderService.getAll();
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", orders);
-            response.put("message", "Все заказы получены");
-            response.put("statusCode", 200);
+        ResponseClass<List<Orders>> response = new ResponseClass<>(MessageClass.ORDER_GETALL, orderService.getAll());
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при получении всех заказов");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/orders/getByStatus/{status}")
-    public ResponseEntity<Map<String, Object>> getByStatus(@PathVariable String status)
+    @GetMapping("/getByStatus/{status}")
+    public ResponseEntity<ResponseClass<List<Orders>>> getByStatus(@PathVariable String status)
     {
-        try
-        {
-            List<Orders> orders = orderService.getAll();
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", orders);
-            response.put("message", "Все заказы по их состоянию получены");
-            response.put("statusCode", 200);
+        ResponseClass<List<Orders>> response = new ResponseClass<>(MessageClass.ORDER_GETBYSTATUS + status, orderService.getByStatus(status));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при получении заказов по статусу");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/orders/findByNumber/{number}")
-    public ResponseEntity<Map<String, Object>> findByNumber(@PathVariable int number)
+    @GetMapping("/findByNumber/{number}")
+    public ResponseEntity<ResponseClass<Orders>> findByNumber(@PathVariable int number)
     {
-        try
-        {
-            Orders order = orderService.findByNumber(number);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", order);
-            response.put("message", "Заказ по номеру получен");
-            response.put("statusCode", 200);
+        ResponseClass<Orders> response = new ResponseClass<>(MessageClass.ORDER_FINDBYNUMBER + number, orderService.findByNumber(number));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске заказа по номеру");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 }

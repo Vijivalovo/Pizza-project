@@ -6,9 +6,13 @@ import com.example.orders.repository.OrderItemRepository;
 import com.example.orders.service.Interfaces.OrderItemInterfaces;
 import com.example.orders.repository.OrderRepository;
 import com.example.orders.DTO.OrderItem.CreateOrderItemDTO;
+import com.example.orders.config.MessageClass;
+import com.example.orders.errors.exceptions.orderExceptions.OrderNotFound;
+import com.example.orders.errors.exceptions.orderItemExceptions.OrderItemNotFound;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,16 +30,16 @@ public class OrderItemService implements OrderItemInterfaces
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Async
     public OrderItems createOrderItem(CreateOrderItemDTO request)
     {
         Orders order = orderRepository.findById(request.getOrder_id())
-        .orElseThrow(() -> new RuntimeException("Order not found"));
+        .orElseThrow(() -> new OrderNotFound(MessageClass.ORDER_NOT_FOUND + request.getOrder_id()));
 
-        System.out.println("Проверка" + order);
-
-        OrderItems orderItem = new OrderItems();
-        orderItem.setProduct_id(request.getProduct_id());
+        OrderItems orderItem = modelMapper.map(request, OrderItems.class);
         orderItem.setOrder(order);
         //Model mapper
 
@@ -49,7 +53,7 @@ public class OrderItemService implements OrderItemInterfaces
         {
             return orderItemRepository.save(orderItem);
         }
-        throw new RuntimeException("OrderItem not found");
+        throw new OrderItemNotFound(MessageClass.ORDERITEM_NOT_FOUND + orderItem.getId());
     }
 
     @Async
@@ -61,31 +65,19 @@ public class OrderItemService implements OrderItemInterfaces
         {
             orderItemRepository.deleteById(id);
         }
-        throw new RuntimeException("OrderItem not found");
+        throw new OrderItemNotFound(MessageClass.ORDERITEM_NOT_FOUND + id);
     }
 
     @Async
     public OrderItems findById(int id)
     {
         return orderItemRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("OrderItem not found"));
+        .orElseThrow(() -> new OrderItemNotFound(MessageClass.ORDERITEM_NOT_FOUND + id));
     }
 
     @Async
     public List<OrderItems> findByOrderId(int id)
     {
-        List<OrderItems> orderItems = orderItemRepository.findAll();
-
-        List<OrderItems> filteredOrderItems = new ArrayList<>();
-
-        for (OrderItems orderItem : orderItems)
-        {
-            if (orderItem.getOrder().getId() == id)
-            {
-                filteredOrderItems.add(orderItem);
-            }
-        }
-
-        return filteredOrderItems;
+        return orderItemRepository.findByOrder_Id(id);
     }
 }

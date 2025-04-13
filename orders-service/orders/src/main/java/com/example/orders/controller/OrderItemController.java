@@ -6,6 +6,7 @@ import com.example.orders.service.OrderService;
 import com.example.orders.repository.OrderItemRepository;
 import com.example.orders.service.OrderItemService;
 import com.example.orders.DTO.OrderItem.CreateOrderItemDTO;
+import com.example.orders.config.MessageClass;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/orderItems")
 public class OrderItemController
 {
     @Autowired
@@ -28,124 +30,45 @@ public class OrderItemController
         this.orderItemRepository = orderItemRepository;
     }
 
-    @PostMapping("api/orderItems/createOrderItem/")
-    public ResponseEntity<Map<String, Object>> createOrderItem(@RequestBody CreateOrderItemDTO request)
+    @PostMapping("/createOrderItem")
+    public ResponseEntity<ResponseClass<OrderItems>> createOrderItem(@RequestBody CreateOrderItemDTO request)
     {
-        try
-        {
-            System.out.println("Проверка" + request);
-            OrderItems orderItemNew = orderItemService.createOrderItem(request);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", orderItemNew);
-            response.put("message", "Продукт добавлен");
-            response.put("statusCode", 200);
+        ResponseClass<OrderItems> response = new ResponseClass<>(MessageClass.ORDERITEM_CREATED, orderItemService.createOrderItem(request));
 
-            return ResponseEntity.ok(response);
-
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при создании продудкта");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(201).body(response);
     }
 
-    @PutMapping("api/orderItems/updateOrderItem/")
-    public ResponseEntity<Map<String, Object>> updateOrderItem(@RequestBody OrderItems orderItems)
+    @PutMapping("/updateOrderItem")
+    public ResponseEntity<ResponseClass<OrderItems>> updateOrderItem(@RequestBody OrderItems orderItems)
     {
-        try
-        {
-            OrderItems orderItemNew = orderItemService.updateOrderItem(orderItems);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", orderItemNew);
-            response.put("message", "Продукт в заказе обновлён");
-            response.put("statusCode", 200);
+        ResponseClass<OrderItems> response = new ResponseClass<>(MessageClass.ORDERITEM_UPDATED, orderItemService.updateOrderItem(orderItems));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при обновлении продукта в заказе");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @DeleteMapping("api/orderItems/deleteOrderItem/{id}")
-    public ResponseEntity<Map<String, Object>> deleteOrderItem(@PathVariable int id)
+    @DeleteMapping("/deleteOrderItem/{id}")
+    public ResponseEntity<ResponseClass<Void>> deleteOrderItem(@PathVariable int id)
     {
-        try
-        {
-            orderItemService.deleteOrderItem(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Продукт в заказе удалён");
-            response.put("statusCode", 200);
+        orderItemService.deleteOrderItem(id);
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при удалении продукта из заказа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
+        ResponseClass<Void> response = new ResponseClass<>(MessageClass.ORDERITEM_DELETED, null);
 
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/orderItems/findById/{id}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable int id)
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<ResponseClass<OrderItems>> findById(@PathVariable int id)
     {
-        try
-        {
-            OrderItems orderItem = orderItemService.findById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", orderItem);
-            response.put("message", "Продукт из заказа найден");
-            response.put("statusCode", 200);
+        ResponseClass<OrderItems> response = new ResponseClass<>(MessageClass.ORDERITEM_FINDBYID + id, orderItemService.findById(id));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске продукта из заказа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("api/orderItems/findByOrderId/{id}")
-    public ResponseEntity<Map<String, Object>> findByOrderId(@PathVariable int id)
+    @GetMapping("/findByOrderId/{id}")
+    public ResponseEntity<ResponseClass<List<OrderItems>>> findByOrderId(@PathVariable int id)
     {
-        try
-        {
-            List<OrderItems> orderItem = orderItemService.findByOrderId(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("body", orderItem);
-            response.put("message", "Продукт из заказа найден");
-            response.put("statusCode", 200);
+        ResponseClass<List<OrderItems>> response = new ResponseClass<>(MessageClass.ORDERITEM_FINDBYORDERID + id, orderItemService.findByOrderId(id));
 
-            return ResponseEntity.ok(response);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Произошла ошибка при поиске продукта из заказа");
-            errorResponse.put("error", e.getMessage());
-            errorResponse.put("statusCode", 500);
-
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        return ResponseEntity.status(200).body(response);
     }
 }

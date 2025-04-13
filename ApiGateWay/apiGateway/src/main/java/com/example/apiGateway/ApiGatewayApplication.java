@@ -1,4 +1,4 @@
-package com.example.users;
+package com.example.apiGateway;
 
 import java.util.Map;
 
@@ -8,11 +8,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class UsersApplication {
+public class ApiGatewayApplication {
 
 	public static void main(String[] args) {
-		SpringApplication app = new SpringApplication(UsersApplication.class);
-        app.setDefaultProperties(Map.of("server.port", "8083"));
+		SpringApplication app = new SpringApplication(ApiGatewayApplication.class);
+        app.setDefaultProperties(Map.of("server.port", "8089"));
         app.run(args);
 	}
 

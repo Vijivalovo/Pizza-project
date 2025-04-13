@@ -73,7 +73,7 @@ public class tokenService implements tokenInterface
 
         Payload payload = new Payload();
         payload.setId(claims.get("id", Integer.class));
-        payload.setRole(claims.get("role", Boolean.class));
+        payload.setRole(claims.get("role", String.class));
 
         return payload;
     }
@@ -90,7 +90,7 @@ public class tokenService implements tokenInterface
 
         Payload payload = new Payload();
         payload.setId(claims.get("id", Integer.class));
-        payload.setRole(claims.get("role", Boolean.class));
+        payload.setRole(claims.get("role", String.class));
 
         return payload;
     }

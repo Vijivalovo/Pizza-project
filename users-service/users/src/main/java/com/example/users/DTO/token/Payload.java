@@ -6,5 +6,5 @@ import lombok.Data;
 public class Payload
 {
     Integer id;
-    Boolean role;
+    String role;
 }

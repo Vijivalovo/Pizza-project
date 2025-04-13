@@ -18,23 +18,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/registration").permitAll() // Разрешаем регистрацию без авторизации api/users/logout/{id}
-                .requestMatchers("/api/users/login").permitAll() // Разрешаем регистрацию без авторизации http://localhost:8083/api/users/refresh/17
+                .requestMatchers("/api/users/registration").permitAll()
+                .requestMatchers("/api/users/login").permitAll()
                 .requestMatchers("/api/users/logout/{id}").permitAll()
                 .requestMatchers("/api/users/refresh").permitAll()
-                .anyRequest().authenticated() // Все остальные запросы требуют авторизации
+                .requestMatchers("/api/users/validateForData").permitAll()
+                .requestMatchers("/api/users/findById").permitAll()
+                .anyRequest().authenticated()
             )
-            .csrf(csrf -> csrf.disable()) // Отключаем CSRF-защиту (например, для Postman)
-            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())) // Разрешаем H2 iframe
-            .httpBasic(httpBasic -> {}) // Включаем Basic Auth (необязательно настраивать)
+            .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
+            .httpBasic(httpBasic -> {})
             .build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080")); // Ваш фронт-энд (или клиент)
+    configuration.setAllowedOrigins(Arrays.asList(
+        "http://localhost:8080",     // старый фронт
+        "http://localhost:5173"      // новый фронт (Vite)
+    ));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
     configuration.setAllowCredentials(true); // Разрешаем отправку учетных данных (куки)
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cookie"));

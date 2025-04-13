@@ -91,9 +91,14 @@ public class userService implements userInterface
 
         for (users user : arrUsers)
         {
-          System.out.println(user + " -->users user2 = modelMapper.map(dto, users.class);");
-
-            if(user.getName().equals(name)) if(passwordEncoder.matches(password, user.getPassword())) return user;
+            if(user.getName().equals(name))
+            {
+              System.out.println(user.getName() + " -->users user2 = modelMapper.map(dto, users.class);");
+              if(passwordEncoder.matches(password, user.getPassword())){
+                System.out.println(checkPassword(password, user.getPassword()) + " -->checkPassword");
+                return user;
+              }
+            }
         }
 
         return null;
@@ -159,5 +164,9 @@ public class userService implements userInterface
         return response;
       }
 
-
+      @Async
+      public users findById(int id)
+      {
+        return UserRepository.findById(id).orElse(null);
+      }
 }

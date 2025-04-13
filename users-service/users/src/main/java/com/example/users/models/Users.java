@@ -29,7 +29,7 @@ public class users {
     private Integer scores = 0;
 
     @Column(name = "role", nullable = false)
-    private Boolean role = false;
+    private String role = "Покупатель";
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
